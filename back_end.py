@@ -2,8 +2,6 @@ from flask import Flask, request
 from datetime import datetime
 import uuid
 
-event_id = str(uuid.uuid4())
-
 app = Flask(__name__)
 
 
