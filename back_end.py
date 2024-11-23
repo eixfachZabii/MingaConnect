@@ -40,6 +40,7 @@ class User:
         self.dateofbirth = user_dateofbirth
         self.interests = user_interests
         self.email = user_email
+        self.events = []
 
 @app.route('/create_event', methods=['POST'])
 def create_event():
@@ -187,6 +188,29 @@ def delete_user():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/join_event', methods=['POST'])
+def join_event():
+    try:
+        data = request.get_json()
+        for user in user_list:
+            if user.id == data.get('user_id'):
+            
+                for event in event_list:
+                    if event.id == data.get('event_id'):
+                        
+                        if event.id in user.events or user.id in event.participants:
+                            return jsonify({'error': 'User already joined the event'}), 409
+                        else:
+                            user.event.append(event.id)
+                            event.participants.append(user.id)
+                            return jsonify({'event_id': event.id,'participants': event.participants}), 200
+                return jsonify({'error': 'Event not found'}), 404
+        return jsonify({'error': 'User not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
     
 @app.route('/get_interests', methods=['GET'])
 def get_interests():
