@@ -1,6 +1,11 @@
+import urllib.request
 from flask import Flask, request, jsonify
 from datetime import datetime
 import uuid
+import urllib
+import csv
+import io
+
 
 app = Flask(__name__)
 
@@ -36,7 +41,6 @@ class Event:
         self.visitors = []
         self.interests = event_interests
 
-
 class User:
 
     def __init__(self, user_name, user_profile_pic, user_date_of_birth, user_interests, user_email):
@@ -64,6 +68,7 @@ def create_event():
         longitudes = data.get('longitudes', 0.0)
         host = data.get('host', 'Anonymous')
         interests = data.get('interests', [])
+
 
         locations = []
         for i in range (len(latitudes)):
@@ -304,7 +309,34 @@ def get_event(event_id):
 
 @app.route('/add_baenke', methods=['POST'])
 def add_baenke():
-    
+    try:
+        url = 'URL: https://opendata.muenchen.de/dataset/5623e119-9a3c-420b-8925-af53bc57c5cd/resource/b000b282-c52f-44eb-a97e-851a4b999aa0/download/ratschbankerl_2024-11-13_standorte.csv'  
+        fileobj = (urllib.request.urlopen(url)).read()
+        csv_file = io.StringIO(fileobj.decode())
+        csv_reader = csv.reader(csv_file)
+        headers = next(csv_reader)
+        locations = []
+        for row in csv_reader:
+            latitude = row[5]
+            longitude = row[6]
+            locations.append([latitude, longitude])
+        
+        if ()
 
 
+        title = 'Ratschbankerl'
+        description = 'TODO'
+        picture = 'TODO'
+        date = None
+        host = ""
+        interests = ""
+        baenke = Event(title, description, picture, date, locations, host, interests)
+        return jsonify({'error': 'User not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 print('Success')
+
+user_stadt_muenchen = User('Stadt München', DEFAULT_PROFILEPIC, None, [], None)
+
+
