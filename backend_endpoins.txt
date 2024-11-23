@@ -8,3 +8,24 @@ DELETE delete_user: 'user_id'
 
 POST join_event: 'user_id', 'event_id'
 GET get_interests
+
+
+
+
+TODO Paul:
+
+Profilbilder
+
+get_userlist
+get_eventlist
+
+get_profile
+get_event
+
+leave_event
+
+get_feed (filter, location)
+
+search_event
+
+event chat
