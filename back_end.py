@@ -363,20 +363,20 @@ def add_baenke():
         headers = next(csv_reader)
         locations = []
         for row in csv_reader:
-            latitude = row[5]
-            longitude = row[6]
+            latitude = float(row[5])
+            longitude = float(row[6])
             locations.append([latitude, longitude])
-        
-        #if ()
 
 
         title = 'Ratschbankerl'
         description = 'TODO'
         picture = 'TODO'
         date = None
-        host = ""
+        host = 'stadt_muenchen'
         interests = ""
         baenke = Event(title, description, picture, date, locations, host, interests)
+        event_list[baenke.id] = baenke
+        
         return jsonify({'error': 'User not found'}), 404
 
     except Exception as e:
@@ -384,9 +384,11 @@ def add_baenke():
     
 print('Success')
 
-user_stadt_muenchen = User('Stadt München', DEFAULT_PROFILE_PIC, None, [], None)
-user_stadt_muenchen.set_id('stadt_muenchen')
-user_list[user_stadt_muenchen.id] = user_stadt_muenchen
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    user_stadt_muenchen = User('Stadt München', "pic", None, [], None)
+    user_stadt_muenchen.set_id('stadt_muenchen')
+    user_list[user_stadt_muenchen.id] = user_stadt_muenchen
+
+    dummy = Event("title", "description", "pic", None, [3.2, 34.7], None, [])
+    event_list[dummy.id] = dummy
+    app.run(host='0.0.0.0', debug=True)
