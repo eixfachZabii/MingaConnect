@@ -8,8 +8,14 @@
 
 ✅ POST join_event: 'user_id', 'event_id'
 ✅ DELETE leave_event: 'user_id', 'event_id'
+
 ✅ GET get_possible_interests
 
+✅ GET get_user_list
+✅ GET get_event_list
+
+✅ GET get_profile: 'user_id'
+✅ GET get_event: 'event_id'
 
 
 
@@ -27,9 +33,3 @@ event chat
 
 
 TODO ROGG:
-
-get_user_list ✅
-get_event_list ✅
-
-get_profile ✅
-get_event ✅
