@@ -56,8 +56,8 @@ def create_event():
         description = data.get('description', 'No description provided')
         picture = data.get('picture', DEFAULT_EVENT_PIC)
         date = data.get('date', None)
-        latitude = data.get('latitude', 0.0)
-        longitude = data.get('longitude', 0.0)
+        latitudes = data.get('latitude', [])
+        longitudes = data.get('longitude', [])
         host = data.get('host', 'Anonymous')
         interests = data.get('interests', [])
 
@@ -67,7 +67,7 @@ def create_event():
             locations.append([latitudes[i], longitudes[0]])
 
         # Create a new Event object
-        new_event = Event(title, description, picture, date, [latitude, longitude], host, interests)
+        new_event = Event(title, description, picture, date, locations, host, interests)
 
         # Add the event to the event_list dictionary
         event_list[new_event.id] = new_event
@@ -98,11 +98,18 @@ def update_event():
         event.title = data.get('title', event.title)
         event.description = data.get('description', event.description)
         event.picture = data.get('picture', event.picture)
-        event.location[0] = data.get('latitude', event.location[0])
-        event.location[1] = data.get('longitude', event.location[1])
+        latitudes = data.get('latitude', None)
+        longitudes = data.get('longitudes', None)
         event.host = data.get('host', event.host)
         event.interests = data.get('interests', event.interests)
 
+        locations = []
+        if latitudes != None:
+            if longitudes != None:
+                for i in range (len(latitudes)):
+                    locations.append([latitudes[i], longitudes[i]])
+                event.locations = locations
+        
         # Return the event_id
         return jsonify({'event_id': event.id}), 200
 
