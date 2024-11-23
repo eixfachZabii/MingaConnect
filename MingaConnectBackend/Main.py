@@ -90,7 +90,7 @@ def add_baenke():
             locations.append([latitude, longitude])
 
         title = 'Ratschbankerl'
-        description = 'Ratschbankerl description'
+        description = 'A place to sit and talk: The ‘Ratschbankerl’ is intended to set an example against loneliness and create places to meet in Munich in all social regions. A suitable bench was chosen in each district and labelled ‘Ratschbankerl’. Anyone who sits down on it invites others to have a chat and also makes themselves available as a conversation partner.'
         picture = 'Ratschbankerl picture'
         date = None
         host = user_stadt_muenchen.id

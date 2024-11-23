@@ -29,16 +29,11 @@ Feed:
         #filter_interest
         #filter_date
         #filter_location
-Rank remaining events
-Write Baenke description
+
+Rank remaining events?
+
 Find Fotos
-Hardcode create_users etc
-
-Gute Kategorien
-
 
 
 search_event
-
 event chat
-#Hardcoded Events:
