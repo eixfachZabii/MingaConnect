@@ -16,7 +16,7 @@ TODO Paul:
 
 Profilbilder
 
-leave_event
+event_type
 
 get_feed (filter, location)
 

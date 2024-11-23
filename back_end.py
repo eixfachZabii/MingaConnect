@@ -9,7 +9,7 @@ DEFAULT_EVENTPIC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAA
 
 event_list = []
 user_list = []
-possible_intersts = [
+possible_interests = [
     'Bouldering',
     'Hiking',
     'Pub Crawls',
@@ -98,14 +98,14 @@ def update_event():
         if 'date' in data:
             event.event_date = data.get('date')
         if 'latitude' in data:
-            event.location[0] = data.get('location')
+            event.location[0] = data.get('latitude')
         if 'longitude' in data:
-            event.location[1] = data.get()
+            event.location[1] = data.get('longitude')
         if 'host' in data:
             event.host = data.get('host')
 
         # Return the event_id
-        return jsonify({'event_id': event.id}), 201
+        return jsonify({'event_id': event.id}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -162,7 +162,7 @@ def update_user():
             return jsonify({'error': 'No user specified'}), 400
         else:
             for element in user_list:
-                if element.id == data.get('user_iid'):
+                if element.id == data.get('user_id'):
                     user = element
                     break
         
@@ -176,7 +176,7 @@ def update_user():
         user.email = data.get('email', user.email)
 
         # Return the user_id
-        return jsonify({'user_id': user.id}), 201
+        return jsonify({'user_id': user.id}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -218,9 +218,32 @@ def join_event():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    
+@app.route('/leave_event', methods=['DELETE'])
+def leave_event():
+    try:
+        data = request.get_json()
+        for user in user_list:
+            if user.id == data.get('user_id'):
+            
+                for event in event_list:
+                    if event.id == data.get('event_id'):
+                        
+                        if event.id in user.events and user.id in event.participants:
+                            user.events.remove(event.id)
+                            event.participants.remove(user.id)
+                            return jsonify({'message': 'User successfully left the event'}), 200
+                        else:
+                            return jsonify({'error': 'User was not saved as participant'}), 400
+                return jsonify({'error': 'Event not found'}), 404
+        return jsonify({'error': 'User not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
 @app.route('/get_interests', methods=['GET'])
 def get_interests():
-    return jsonify(possible_intersts)
+    return jsonify(possible_interests)
 
 print('Success')
