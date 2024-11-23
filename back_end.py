@@ -101,6 +101,22 @@ def update_event():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/delete_event', methods=['DELETE'])
+def delete_event():
+    try:
+        # Parse JSON data from the request
+        data = request.get_json()
+        
+        for event in event_list:
+            if event.id == data.get('event_id'):
+                event_list.remove(event)
+                return jsonify({'event_id': event.id}), 200
+        return jsonify({'error': 'Event not found'}), 404
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
@@ -112,11 +128,11 @@ def create_user():
         name = data.get('name', 'Anonymous')
         profilepic = data.get('profilepic', 'default-picture-url.jpg TODO')
         dateofbirth = data.get('dateofbirth', None)
-        user_interests = data.get('interests', [])
+        interests = data.get('interests', [])
         email = data.get('email', 'No email specified')
 
         # Create a new Event object
-        new_user = User(name, profilepic, dateofbirth, user_interests, email)
+        new_user = User(name, profilepic, dateofbirth, interests, email)
 
         # Add the event to the event_list
         user_list.append(new_user)
@@ -154,6 +170,21 @@ def update_user():
         # Return the user_id
         return jsonify({'user_id': user.id}), 201
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/delete_user', methods=['DELETE'])
+def delete_user():
+    try:
+        # Parse JSON data from the request
+        data = request.get_json()
+        
+        for user in user_list:
+            if user.id == data.get('user_id'):
+                user_list.remove(user)
+                return jsonify({'user_id': user.id}), 200
+        return jsonify({'error': 'User not found'}), 404
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
