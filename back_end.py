@@ -313,4 +313,9 @@ def get_event(event_id):
     })
 
 
+    @app.route('/add_baenke', methods=['POST'])
+    def add_baenke():
+        pass
+
+
 print('Success')
