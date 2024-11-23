@@ -21,7 +21,10 @@
 TODO Paul:
 
 Feed:
-
+    Filter etc:
+        filter_interest
+        filter_date
+        filter_location
 
 get_feed (filter, location)
 
