@@ -353,7 +353,7 @@ def get_event():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/add_baenke', methods=['POST'])
+
 def add_baenke():
     try:
         url = 'URL: https://opendata.muenchen.de/dataset/5623e119-9a3c-420b-8925-af53bc57c5cd/resource/b000b282-c52f-44eb-a97e-851a4b999aa0/download/ratschbankerl_2024-11-13_standorte.csv'  
@@ -376,8 +376,8 @@ def add_baenke():
         interests = ""
         baenke = Event(title, description, picture, date, locations, host, interests)
         event_list[baenke.id] = baenke
-        
-        return jsonify({'error': 'User not found'}), 404
+
+        return baenke.id
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -389,6 +389,7 @@ if __name__ == '__main__':
     user_stadt_muenchen.set_id('stadt_muenchen')
     user_list[user_stadt_muenchen.id] = user_stadt_muenchen
 
-    dummy = Event("title", "description", "pic", None, [3.2, 34.7], None, [])
+    dummy = Event("title", "description", "pic", None, [[48.29816, 11.70607]], None, [])
     event_list[dummy.id] = dummy
+    add_baenke()
     app.run(host='0.0.0.0', debug=True)
