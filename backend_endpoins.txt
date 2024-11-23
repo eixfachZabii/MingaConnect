@@ -16,7 +16,6 @@ TODO Paul:
 
 Profilbilder
 
-event_type
 
 get_feed (filter, location)
 

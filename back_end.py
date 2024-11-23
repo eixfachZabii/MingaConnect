@@ -77,22 +77,6 @@ def create_event():
 
 @app.route('/update_event', methods=['PUT'])
 def update_event():
-    '''
-        # Update the given attributes
-        user.name = data.get('name', user.name)
-        user.profilepic = data.get('profilepic', user.profilepic)
-        user.date = data.get('date', user.date)
-        user.location = data.get('location', user.location)
-        user.host = data.get('host', user.host)
-        user.interests = data.get('interests', user.interests)
-        user.email = data.get('email', user.email)
-
-        # Return the user_id
-        return jsonify({'user_id': user.id}), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    '''
     try:
         # Parse JSON data from the request
         data = request.get_json()
