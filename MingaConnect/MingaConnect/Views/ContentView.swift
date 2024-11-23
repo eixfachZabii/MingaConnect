@@ -13,14 +13,14 @@ struct ContentView: View {
     
     var body: some View {
             VStack {
-                FeedView()
+                FeedView(loggedIn: $loggedIn)
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("Background"))
-            .sheet(isPresented: $loggedIn) {
+            /*.sheet(isPresented: $loggedIn) {
                 SheetNavigator(isPresented: $loggedIn)
-            }
+            }*/
         
        
     }

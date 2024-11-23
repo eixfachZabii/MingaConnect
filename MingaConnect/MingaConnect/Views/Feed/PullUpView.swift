@@ -14,7 +14,7 @@ struct PullUpView: View {
     var body: some View {
         ZStack {
             // Map area (placeholder)
-            FeedMapView()
+            //FeedMapView()
             
             // Draggable Bottom Sheet
             GeometryReader { geometry in
