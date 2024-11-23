@@ -1,0 +1,10 @@
+POST create_event: 'title', 'description', 'picture', 'date', 'location', 'host' (Sonst default-Werte)
+PUT update_event: 'title', 'description', 'picture', 'date', 'location', 'host' (Sonst bleiben Werte gleich)
+DELETE delete_event: 'event_id'
+
+POST create_user: 'name', 'profilepic', 'dateofbirth', 'interests', 'email' (Sonst default-Werte)
+PUT update_user: 'name', 'profilepic', 'dateofbirth', 'interests', 'email' (Sonst bleiben Werte gleich)
+DELETE delete_user: 'user_id'
+
+POST join_event: 'user_id', 'event_id'
+GET get_interests

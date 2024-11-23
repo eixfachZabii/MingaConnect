@@ -215,3 +215,5 @@ def join_event():
 @app.route('/get_interests', methods=['GET'])
 def get_interests():
     return jsonify(possible_intersts)
+
+print('Success')
