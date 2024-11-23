@@ -1,5 +1,5 @@
-POST create_event: 'title', 'description', 'picture', 'date', 'location', 'host' (Sonst default-Werte)
-PUT update_event: 'title', 'description', 'picture', 'date', 'location', 'host' (Sonst bleiben Werte gleich)
+POST create_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst default-Werte)
+PUT update_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst bleiben Werte gleich)
 DELETE delete_event: 'event_id'
 
 POST create_user: 'name', 'profilepic', 'dateofbirth', 'interests', 'email' (Sonst default-Werte)

@@ -23,7 +23,7 @@ possible_interests = [
 
 class Event:
 
-    def __init__(self, event_title, event_description, event_picture, event_date, event_location, event_host):
+    def __init__(self, event_title, event_description, event_picture, event_date, event_location, event_host, event_interests):
         self.id = str(uuid.uuid4())
         self.title = event_title
         self.description = event_description
@@ -33,6 +33,7 @@ class Event:
         self.location = event_location
         self.host = event_host
         self.visitors = []
+        self.interests = event_interests
 
 class User:
 
@@ -59,10 +60,11 @@ def create_event():
         latitude = data.get('latitude', 0.0)
         longitude = data.get('longitude', 0.0)
         host = data.get('host', 'Anonymous')
+        interests = data.get('interests', [])
 
 
         # Create a new Event object
-        new_event = Event(title, description, picture, date, [latitude, longitude], host)
+        new_event = Event(title, description, picture, date, [latitude, longitude], host, interests)
 
         # Add the event to the event_list
         event_list.append(new_event)
@@ -75,6 +77,22 @@ def create_event():
 
 @app.route('/update_event', methods=['PUT'])
 def update_event():
+    '''
+        # Update the given attributes
+        user.name = data.get('name', user.name)
+        user.profilepic = data.get('profilepic', user.profilepic)
+        user.date = data.get('date', user.date)
+        user.location = data.get('location', user.location)
+        user.host = data.get('host', user.host)
+        user.interests = data.get('interests', user.interests)
+        user.email = data.get('email', user.email)
+
+        # Return the user_id
+        return jsonify({'user_id': user.id}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    '''
     try:
         # Parse JSON data from the request
         data = request.get_json()
@@ -87,22 +105,13 @@ def update_event():
                 if element.id == data.get('event_id'):
                     event = element
                     break
-        
-        # Update the given attributes
-        if 'title' in data:
-            event.title = data.get('title')
-        if 'description' in data:
-            event.description = data.get('description')
-        if 'picture' in data:
-            event.picture = data.get('picture')
-        if 'date' in data:
-            event.event_date = data.get('date')
-        if 'latitude' in data:
-            event.location[0] = data.get('latitude')
-        if 'longitude' in data:
-            event.location[1] = data.get('longitude')
-        if 'host' in data:
-            event.host = data.get('host')
+        event.title = data.get('title', event.title)
+        event.description = data.get('description', event.description)
+        event.picture = data.get('picture', event.picture)
+        event.location[0] = data.get('latitude', event.latitude)
+        event.location[1] = data.get('longitude', event.longitude)
+        event.host = data.get('host', event.host)
+        event.interests = data.get('interests', event.interests)
 
         # Return the event_id
         return jsonify({'event_id': event.id}), 200
