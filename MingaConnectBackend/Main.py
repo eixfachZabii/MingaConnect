@@ -21,28 +21,26 @@ possible_interests = [
 def join_event():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')
-        event_id = data.get('event_id')
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(user_id)
-        event = Events.event_list.get(event_id)
-
+        user = Users.user_list.get(data.get('user_id', '0'))
         if not user:
             return jsonify({'error': 'User not found'}), 404
+        
+        event = Events.event_list.get(data.get('event_id', '0'))
         if not event:
             return jsonify({'error': 'Event not found'}), 404
 
         # Check if user is already participating
-        if event_id in user.events or user_id in event.participants:
+        if event.id in user.events or user.id in event.participants:
             return jsonify({'error': 'User already joined the event'}), 409
 
         # Add event to user's events and user to event's participants
-        user.events[event_id] = event
-        event.participants[user_id] = user
+        user.events[event.id] = event
+        event.participants[user.id] = user
 
         return jsonify({
-            'event_id': event_id,
+            'event_id': event.id,
             'participants': list(event.participants.keys())
         }), 200
 
@@ -54,25 +52,23 @@ def join_event():
 def leave_event():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')
-        event_id = data.get('event_id')
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(user_id)
-        event = Events.event_list.get(event_id)
-
+        user = Users.user_list.get(data.get('user_id', '0'))
         if not user:
             return jsonify({'error': 'User not found'}), 404
+        
+        event = Events.event_list.get(data.get('event_id', '0'))
         if not event:
             return jsonify({'error': 'Event not found'}), 404
 
         # Check if user is participating
-        if event_id not in user.events or user_id not in event.participants:
+        if event.id not in user.events or user.id not in event.participants:
             return jsonify({'error': 'User was not a participant'}), 400
 
         # Remove event from user's events and user from event's participants
-        del user.events[event_id]
-        del event.participants[user_id]
+        del user.events[event.id]
+        del event.participants[user.id]
 
         return jsonify({'message': 'User successfully left the event'}), 200
 
@@ -100,9 +96,9 @@ def add_baenke():
 
 
         title = 'Ratschbankerl'
-        description = 'TODO'
-        picture = 'TODO'
-        date = datetime.now()
+        description = 'Ratschbankerl description'
+        picture = 'Ratschbankerl picture'
+        date = None
         host = 'stadt_muenchen'
         interests = ['Meet new people']
         baenke = Events.Event(title, description, picture, date, locations, host, interests)
