@@ -5,6 +5,9 @@ import uuid
 app = Flask(__name__)
 
 event_list = []
+user_list = []
+
+
 
 class Event:
 
@@ -44,14 +47,7 @@ def create_event():
         host = data.get('host', 'Anonymous')
 
         # Create a new Event object
-        new_event = Event(
-            event_title=data['title'],
-            event_description=data['description'],
-            event_picture=data['picture'],
-            event_date=data['date'],
-            event_location=data['location'],
-            event_host=data['host']
-        )
+        new_event = Event(title, description, picture, date, location, host)
 
         # Add the event to the event_list
         event_list.append(new_event)
@@ -97,9 +93,6 @@ def update_event():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#delete event
-
-
 @app.route('/create_user', methods=['POST'])
 def create_user():
     try:
@@ -107,30 +100,50 @@ def create_user():
         data = request.get_json()
 
         # Set default values for attributes
-        title = data.get('title', 'Untitled Event')
-        description = data.get('description', 'No description provided')
-        picture = data.get('picture', 'default-picture-url.jpg TODO')
-        date = data.get('date', None)
-        location = data.get('location', 'No location specified')
-        host = data.get('host', 'Anonymous')
+        name = data.get('name', 'Anonymous')
+        profilepic = data.get('profilepic', 'default-picture-url.jpg TODO')
+        dateofbirth = data.get('dateofbirth', None)
+        user_interests = data.get('interests', [])
+        email = data.get('email', 'No email specified')
 
         # Create a new Event object
-        new_event = Event(
-            event_title=data['title'],
-            event_description=data['description'],
-            event_picture=data['picture'],
-            event_date=data['date'],
-            event_location=data['location'],
-            event_host=data['host']
-        )
+        new_user = User(name, profilepic, dateofbirth, user_interests, email)
 
         # Add the event to the event_list
-        event_list.append(new_event)
+        user_list.append(new_user)
 
-        # Return the event_id
-        return jsonify({'event_id': new_event.id}), 201
+        # Return the user_id
+        return jsonify({'user_id': new_user.id}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-#update user
+@app.route('/update_user', methods=['PUT'])
+def update_user():
+    try:
+        # Parse JSON data from the request
+        data = request.get_json()
+
+        # Check if an id was given
+        if 'user_id' not in data:
+            return jsonify({'error': 'No user specified'}), 400
+        else:
+            for element in user_list:
+                if element.id == data.get('user_iid'):
+                    user = element
+                    break
+        
+        # Update the given attributes
+        user.name = data.get('name', user.name)
+        user.profilepic = data.get('profilepic', user.profilepic)
+        user.date = data.get('date', user.date)
+        user.location = data.get('location', user.location)
+        user.host = data.get('host', user.host)
+        user.interests = data.get('interests', user.interests)
+        user.email = data.get('email', user.email)
+
+        # Return the user_id
+        return jsonify({'user_id': user.id}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
