@@ -6,21 +6,28 @@
 //
 
 import SwiftUI
-import MapKit
-
-extension CLLocationCoordinate2D {
-    static let spot = CLLocationCoordinate2D(latitude: 48.14006, longitude: 11.58733)
-    static let spot2 = CLLocationCoordinate2D(latitude: 48.13225, longitude: 11.5635)
-}
 
 struct FeedView: View {
+    @State private var showingBottomSheet = true
+
     var body: some View {
         VStack {
-            Map {
-                Marker("Spot", coordinate: .spot)
-                Marker("Spot", coordinate: .spot2)
-            }
+            FeedMapView()
+                .sheet(isPresented: $showingBottomSheet) {
+                    FeedEventView()
+                            // 2.
+                            .interactiveDismissDisabled()
+                            // 3.
+                            .presentationDetents([.height(50), .medium, .large])
+                            // 4.
+                            .presentationBackgroundInteraction(
+                                .enabled(upThrough: .large)
+                            )
+                        }
+            
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color("Background"))
     }
 }
 
