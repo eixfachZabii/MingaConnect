@@ -12,22 +12,22 @@ struct FeedView: View {
     @State private var showingBottomSheet = true
     @State private var events: [Event] = []
     @State var coordinates: [[Double]] = []
-
+    
     var body: some View {
         VStack {
             FeedMapView(events: $events, coordinates: $coordinates)
                 .onAppear {
-                            fetchEvents()
-                        }
+                    fetchEvents()
+                }
                 .sheet(isPresented: $showingBottomSheet) {
                     
                     if loggedIn {
-                                            FeedEventView()
-                                                .interactiveDismissDisabled()
-                                                .presentationDetents([.height(50), .medium, .large])
-                                                .presentationBackgroundInteraction(.enabled(upThrough: .large))
-                                        }
-                        }
+                        FeedEventView()
+                            .interactiveDismissDisabled()
+                            .presentationDetents([.height(50), .medium, .large])
+                            .presentationBackgroundInteraction(.enabled(upThrough: .large))
+                    }
+                }
             
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -35,19 +35,19 @@ struct FeedView: View {
     }
     
     private func fetchEvents() {
-            APIService.shared.getEvents { result in
-                switch result {
-                case .success(let fetchedEvents):
-                    DispatchQueue.main.async {
-                        self.events = Array(fetchedEvents.values)
-                        print(self.events)
-                        self.coordinates = extractLocations(from: self.events)
-                    }
-                case .failure(let error):
-                    print("Failed to fetch events: \(error.localizedDescription)")
+        APIService.shared.getEvents { result in
+            switch result {
+            case .success(let fetchedEvents):
+                DispatchQueue.main.async {
+                    self.events = Array(fetchedEvents.values)
+                    print(self.events)
+                    self.coordinates = extractLocations(from: self.events)
                 }
+            case .failure(let error):
+                print("Failed to fetch events: \(error.localizedDescription)")
             }
         }
+    }
     func extractLocations(from events: [Event]) -> [[Double]] {
         print("Start extraction")
         var allLocations: [[Double]] = []

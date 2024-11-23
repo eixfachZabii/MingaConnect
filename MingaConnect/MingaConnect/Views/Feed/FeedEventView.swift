@@ -53,17 +53,18 @@ struct CreateEventView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var title = ""
     @State private var description = ""
+    @State private var host = ""
     @State private var address = ""
-    @State private var coordinates: CLLocationCoordinate2D? // Holds the picked coordinates
-    @State private var selectedImage: UIImage?
+    @State private var coordinates: CLLocationCoordinate2D?
     @State private var isSubmitting = false
     @State private var errorMessage: String?
-    @State private var isMapPresented = false // Controls map picker sheet
-    @State private var isShowingImagePicker = false
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 48.1351, longitude: 11.5820), // Munich
-        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-    )
+    @State private var isMapPresented = false
+    @State private var selectedDate = Date()
+    
+    // Interests Data
+    @State private var interests = ["Football", "Gym", "Cooking", "Travel", "Music", "Movies", "Reading", "Yoga", "Technology", "Fashion", "DIY Projects", "Animal Care", "Martial Arts"]
+    @State private var selectedInterests: [String] = []
+    @State private var isDropdownExpanded = false
     
     var body: some View {
         NavigationView {
@@ -72,28 +73,106 @@ struct CreateEventView: View {
                     Section(header: Text("Event Details")) {
                         TextField("Title", text: $title)
                         TextField("Description", text: $description)
+                        TextField("Host", text: $host)
+                        
+                        DatePicker("Event Date", selection: $selectedDate, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                    }
+                    
+                    Section(header: Text("Interests")) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            // Dropdown Header
+                            Button(action: {
+                                withAnimation {
+                                    isDropdownExpanded.toggle()
+                                }
+                            }) {
+                                HStack {
+                                    Text(selectedInterests.isEmpty ? "Select Interests" : selectedInterests.joined(separator: ", "))
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Image(systemName: isDropdownExpanded ? "chevron.up" : "chevron.down")
+                                        .foregroundColor(.gray)
+                                }
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
+                            }
+                            
+                            // Dropdown List
+                            if isDropdownExpanded {
+                                ScrollView {
+                                    VStack(spacing: 0) {
+                                        ForEach(interests, id: \.self) { interest in
+                                            HStack {
+                                                Text(interest)
+                                                    .foregroundColor(.black)
+                                                Spacer()
+                                                if selectedInterests.contains(interest) {
+                                                    Image(systemName: "checkmark")
+                                                        .foregroundColor(.blue)
+                                                }
+                                            }
+                                            .padding()
+                                            .background(Color.white)
+                                            .onTapGesture {
+                                                toggleInterest(interest)
+                                            }
+                                            Divider() // Divider between items
+                                        }
+                                    }
+                                }
+                                .frame(maxHeight: 150) // Set dropdown height
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
+                                .background(Color.white)
+                                .cornerRadius(8)
+                                .shadow(radius: 4)
+                            }
+                            
+                            // Display Selected Interests
+                            if !selectedInterests.isEmpty {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Selected Interests:")
+                                        .font(.subheadline)
+                                        .padding(.top)
+                                    
+                                    ForEach(selectedInterests, id: \.self) { interest in
+                                        HStack {
+                                            Text(interest)
+                                                .font(.body)
+                                            Spacer()
+                                            Button(action: {
+                                                toggleInterest(interest)
+                                            }) {
+                                                Image(systemName: "xmark.circle")
+                                                    .foregroundColor(.red)
+                                            }
+                                        }
+                                        .padding(.vertical, 4)
+                                    }
+                                }
+                            }
+                        }
                     }
                     
                     Section(header: Text("Event Location")) {
-                        TextField("Search for an address", text: $address, onCommit: {
-                            geocodeAddress()
-                        })
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        TextField("Search for an address", text: $address)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
                         
-                        MapViewRepresentable(region: $region, selectedCoordinate: $coordinates)
-                            .frame(height: 200)
-                            .onTapGesture {
-                                isMapPresented = true
-                            }
-                    }
-                    
-                    /*Section(header: Text("Event Image")) {
-                        Button(action: {
-                            pickImage()
-                        }) {
-                            Text(selectedImage == nil ? "Upload Image" : "Image Selected")
+                        MapViewRepresentable(region: .constant(MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: 48.1351, longitude: 11.5820), // Munich
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )), selectedCoordinate: $coordinates)
+                        .frame(height: 200)
+                        .onTapGesture {
+                            isMapPresented = true
                         }
-                    }*/
+                    }
                 }
                 
                 Button(action: {
@@ -107,9 +186,9 @@ struct CreateEventView: View {
                             .font(.headline)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color("AccentColor"))
+                            .background(Color.blue)
+                            .foregroundColor(.white)
                             .cornerRadius(10)
-                            .foregroundColor(Color("Background"))
                     }
                 }
                 .padding()
@@ -124,90 +203,50 @@ struct CreateEventView: View {
             .navigationBarItems(leading: Button("Cancel") {
                 presentationMode.wrappedValue.dismiss()
             })
-            .sheet(isPresented: $isMapPresented) {
-                MapPickerView(selectedCoordinates: $coordinates)
-            }
-            .sheet(isPresented: $isShowingImagePicker) {
-                ImagePicker(selectedImage: $selectedImage)
-            }
         }
     }
     
-    private func geocodeAddress() {
-        guard !address.isEmpty else {
-            // Set region to Munich
-            region = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 48.1351, longitude: 11.5820),
-                span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-            )
-            return
+    // Toggle interest selection
+    private func toggleInterest(_ interest: String) {
+        if selectedInterests.contains(interest) {
+            selectedInterests.removeAll { $0 == interest }
+        } else {
+            selectedInterests.append(interest)
         }
-        
-        isSubmitting = true
-        errorMessage = nil
-        
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(address) { placemarks, error in
-            DispatchQueue.main.async {
-                isSubmitting = false
-                if let error = error {
-                    errorMessage = "Geocoding failed: \(error.localizedDescription)"
-                    return
-                }
-                
-                guard let placemark = placemarks?.first, let location = placemark.location else {
-                    errorMessage = "No location found for the given address."
-                    return
-                }
-                
-                coordinates = location.coordinate
-                region = MKCoordinateRegion(
-                    center: location.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                )
-            }
-        }
-    }
-    
-    private func pickImage() {
-        isShowingImagePicker = true
     }
     
     private func submitEvent() {
-        guard !title.isEmpty, !description.isEmpty, let coordinates = coordinates else {
-            errorMessage = "Please fill in all fields and pick a location."
+        guard !title.isEmpty, !description.isEmpty, !host.isEmpty else {
+            errorMessage = "Please fill in all fields."
             return
         }
         
         isSubmitting = true
         errorMessage = nil
         
-        /*var imageBase64: String?
-        if let selectedImage = selectedImage, let imageData = selectedImage.jpegData(compressionQuality: 0.8) {
-            imageBase64 = imageData.base64EncodedString()
-        }*/
-        
+        // Prepare event data
         let newEvent = Event(
             id: UUID().uuidString,
             title: title,
             description: description,
-            location: [[coordinates.latitude, coordinates.longitude]],
-            interests: ["test"]
-            //image: Base64
+            event_date: formatDateToString(selectedDate),
+            location: [[coordinates?.latitude ?? 0.0, coordinates?.longitude ?? 0.0]],
+            host: host,
+            interests: selectedInterests
         )
         
-        APIService.shared.createEvent(event: newEvent) { result in
-            DispatchQueue.main.async {
-                isSubmitting = false
-                switch result {
-                case .success(let eventID):
-                    print("Event created successfully with ID: \(newEvent.location)")
-                    presentationMode.wrappedValue.dismiss()
-                case .failure(let error):
-                    errorMessage = error.localizedDescription
-                }
-            }
+        // Mock API call
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.isSubmitting = false
+            print("Event submitted: \(newEvent)")
+            presentationMode.wrappedValue.dismiss()
         }
+    }
+    
+    private func formatDateToString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter.string(from: date)
     }
 }
 
