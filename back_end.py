@@ -224,10 +224,10 @@ def leave_event():
         data = request.get_json()
         for user in user_list:
             if user.id == data.get('user_id'):
-            
+
                 for event in event_list:
                     if event.id == data.get('event_id'):
-                        
+
                         if event.id in user.events and user.id in event.participants:
                             user.events.remove(event.id)
                             event.participants.remove(user.id)
@@ -242,8 +242,37 @@ def leave_event():
 
 
 
+
 @app.route('/get_interests', methods=['GET'])
 def get_interests():
     return jsonify(possible_interests)
+
+
+@app.route('/get_userlist', methods=['GET'])
+def get_userlist():
+    return jsonify(user_list)
+
+@app.route('/get_eventlist', methods=['GET'])
+def get_eventlist():
+    return jsonify(event_list)
+
+@app.route('/get_profile/<user_id>', methods=['GET'])
+def get_profile(user_id):
+    user = next((user for user in user_list if user.id == user_id), None)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "profilepic": user.profilepic,
+        "dateofbirth": user.dateofbirth,
+        "interests": user.interests,
+        "email": user.email,
+        "events": user.events
+    })
+
+@app.route('/get_event/<user_id>', methods=['GET'])
+def get_event(event):
+    return jsonify()
 
 print('Success')
