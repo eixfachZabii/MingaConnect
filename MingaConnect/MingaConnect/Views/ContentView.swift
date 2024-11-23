@@ -12,16 +12,17 @@ struct ContentView: View {
     @State var loggedIn = true
     
     var body: some View {
-        NavigationView {
             VStack {
                 FeedView()
+                
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("Background"))
             .sheet(isPresented: $loggedIn) {
                 SheetNavigator(isPresented: $loggedIn)
             }
-        }
+        
+       
     }
 }
 
