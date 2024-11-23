@@ -255,8 +255,8 @@ def leave_event():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/get_interests', methods=['GET'])
-def get_interests():
+@app.route('/get_possible_interests', methods=['GET'])
+def get_possible_interests():
     return jsonify(possible_interests)
 
 
@@ -283,39 +283,56 @@ def get_event_list():
     } for event_id, event in event_list.items()})
 
 
-@app.route('/get_profile/<user_id>', methods=['GET'])
-def get_profile(user_id):
-    user = user_list.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-    return jsonify({
-        "id": user.id,
-        "username": user.username,
-        "profile_pic": user.profile_pic,
-        "date_of_birth": user.date_of_birth,
-        "interests": user.interests,
-        "email": user.email,
-        "events": list(user.events.keys())
-    })
+@app.route('/get_profile', methods=['GET'])
+def get_profile():
+    try:
+        # Parse JSON data from the request
+        data = request.get_json()
+
+        user_id = data.get('user_id')
+
+        user = user_list.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        return jsonify({
+            "id": user.id,
+            "username": user.username,
+            "profile_pic": user.profile_pic,
+            "date_of_birth": user.date_of_birth,
+            "interests": user.interests,
+            "email": user.email,
+            "events": list(user.events.keys())
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
-@app.route('/get_event/<event_id>', methods=['GET'])
-def get_event(event_id):
-    event = event_list.get(event_id)
-    if not event:
-        return jsonify({"error": "Event not found"}), 404
-    return jsonify({
-        "id": event.id,
-        "title": event.title,
-        "description": event.description,
-        "picture": event.picture,
-        "event_date": event.event_date,
-        "create_date": event.create_date,
-        "location": event.location,
-        "host": event.host,
-        "participants": list(event.participants.keys()),
-        "interests": event.interests
-    })
+@app.route('/get_event', methods=['GET'])
+def get_event():
+    try:
+        # Parse JSON data from the request
+        data = request.get_json()
+
+        event = data.get('event_id')
+
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+        return jsonify({
+            "id": event.id,
+            "title": event.title,
+            "description": event.description,
+            "picture": event.picture,
+            "event_date": event.event_date,
+            "create_date": event.create_date,
+            "location": event.location,
+            "host": event.host,
+            "participants": list(event.participants.keys()),
+            "interests": event.interests
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/add_baenke', methods=['POST'])
