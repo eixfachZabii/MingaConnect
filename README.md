@@ -4,7 +4,7 @@ On November 22-24, 2024, our team participated in the HackaTUM Hackathon in Muni
 Inspired by the City of Munich's challenge to address loneliness and foster community connections,
 we proudly presented our project Minga Connect.
 
-<img src="Assets/images/MingaSmall.png" alt="MingaSmall" width="1024" />
+<img src="Assets/images/MingaSmall.png" alt="MingaSmall" width="512" />
 
 ---
 
