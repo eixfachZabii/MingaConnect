@@ -4,10 +4,11 @@ import uuid
 
 app = Flask(__name__)
 
-DEFAULT_PROFILEPIC = "data:image/png;base64,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"
-DEFAULT_EVENTPIC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEJElEQVR4nO2azWsVVxiHnzQlqdgPESJosAsbsJssbBG6S1bdqhDRxjZtgoUuWt0p/gklZFG6bAWl7kRR3Anix8JUKLXFhXbRQguNkrSFasEWNZEDp3AZzty5M3PnzDuZ3wMHkpkz70zOM+frnYAQQgghhBBCxGdNBUttUPsDqCAha4ZfhNofQIXuQkRcMnuIiIuEGENCmi5Eky79XUVJCKZeKgmhfgkSQouEiHxIiDEkxBgSYgwJMYaEGENCjCEhxpAQY0iIMSSkIMPAEeBb4B9f3M+f+XNFkZACjAI/dMk/3fZ1iiAhORnOkNEppUhPkZCcHMmRqf00b3AJyc+tHEIWC8RXD8nJoxxCXN3WCJkB/gSWgP3YFPKwLUKOAasd93gK7CUOGrI6GAA+T3kbHwOTEYS4fYYmdWAQ+DqjMf4GdlUsZNgvaXtZ9g6t1yHLNcL5QOwngWMPgDGqZTRDyrreGL4CXEnpDZPAQuDcL8BWqmXI7zMW/UTvyk1/rEjPaISQzf4PTsZ0q6t3OuaVk4E6d/z1TcOskG2+UZPxfgV2BuaXc4G6TuZGmoVJIW/6hk/GugtsT7lmA3AjcM0l4EWagzkhbwPLgTjfASMZ174GfB+49gzwAs3AlJBJP1knY1wFXu0xxhbgp0CML2kGZoTs8Zu75PUXgZdy/lFvAPcDsY5jHxNCZlL2FKdLjP/jwF+JeC7dchjb1C7kaCIv9X/5wi9pyzAR6HUu7zWFXWoT4hp7PlB/1ScP+8VeL6HzHo+9rDJMAyvA78BBGi7E7Ru+CtR1Dfcx/eeDQC90i4e3CsabBZ4lXqJPmirE5aXOBur9V/F3jeOBey4HNpl5ZfRbSlQhLwOXA3Xcv9C8S/XMl8x7pcnop5RoQkb85i553o3Du4nDAHAq8Aw/Apsyrp0LyHiWcszVNS3kdeBe4NySX57GZLBA3ivUM9zvH6WcK9NTKhfi8lK/BY7/DOygHjYA13vMe6XJ+DCjTlEplQv5o2Beqmo2+aEq+WynOvY/oWHqqV+19TqkzVkTkizXcuSlqmZLl7zXbIoMl1VIox89JaqQCwXyUlUz5j/7Jp91NSDDbQazKNtTogn5xvB3ifFA3isp4/0c8cr0lChCFvqQl6qaCeDfwLO7pOeBAvGK9pTKhZygGcwFGvBJyexBESmVC2myjKmKYneT0nohsymrqV4m8CrmlFYLmU2RcSjSvUJSWitkOkLPKDJ8tVLIQCCDkLYDjy2ltUJWuuSm6pTSSiGOfV6K+0j1HvFJk9JaIRYISZGQmsn6CplEPaRmKUkkpObhK4mERKTVqyyrSIgxJMQYEmIMCWmbEBVKtYGEYOslkhDqlyAhrGMholokxBgSYgwJaZoQFeqd9CUAU21Q+wOoICFrhl8EIYQQQgghhCAmzwFP3jk+Vt9ergAAAABJRU5ErkJggg=="
-event_list = {}  # Changed to a dictionary
-user_list = {}  # Changed to a dictionary
+DEFAULT_PROFILE_PIC = "data:image/png;base64,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"
+DEFAULT_EVENT_PIC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEJElEQVR4nO2azWsVVxiHnzQlqdgPESJosAsbsJssbBG6S1bdqhDRxjZtgoUuWt0p/gklZFG6bAWl7kRR3Anix8JUKLXFhXbRQguNkrSFasEWNZEDp3AZzty5M3PnzDuZ3wMHkpkz70zOM+frnYAQQgghhBBCxGdNBUttUPsDqCAha4ZfhNofQIXuQkRcMnuIiIuEGENCmi5Eky79XUVJCKZeKgmhfgkSQouEiHxIiDEkxBgSYgwJMYaEGENCjCEhxpAQY0iIMSSkIMPAEeBb4B9f3M+f+XNFkZACjAI/dMk/3fZ1iiAhORnOkNEppUhPkZCcHMmRqf00b3AJyc+tHEIWC8RXD8nJoxxCXN3WCJkB/gSWgP3YFPKwLUKOAasd93gK7CUOGrI6GAA+T3kbHwOTEYS4fYYmdWAQ+DqjMf4GdlUsZNgvaXtZ9g6t1yHLNcL5QOwngWMPgDGqZTRDyrreGL4CXEnpDZPAQuDcL8BWqmXI7zMW/UTvyk1/rEjPaISQzf4PTsZ0q6t3OuaVk4E6d/z1TcOskG2+UZPxfgV2BuaXc4G6TuZGmoVJIW/6hk/GugtsT7lmA3AjcM0l4EWagzkhbwPLgTjfASMZ174GfB+49gzwAs3AlJBJP1knY1wFXu0xxhbgp0CML2kGZoTs8Zu75PUXgZdy/lFvAPcDsY5jHxNCZlL2FKdLjP/jwF+JeC7dchjb1C7kaCIv9X/5wi9pyzAR6HUu7zWFXWoT4hp7PlB/1ScP+8VeL6HzHo+9rDJMAyvA78BBGi7E7Ru+CtR1Dfcx/eeDQC90i4e3CsabBZ4lXqJPmirE5aXOBur9V/F3jeOBey4HNpl5ZfRbSlQhLwOXA3Xcv9C8S/XMl8x7pcnop5RoQkb85i553o3Du4nDAHAq8Aw/Apsyrp0LyHiWcszVNS3kdeBe4NySX57GZLBA3ivUM9zvH6WcK9NTKhfi8lK/BY7/DOygHjYA13vMe6XJ+DCjTlEplQv5o2Beqmo2+aEq+WynOvY/oWHqqV+19TqkzVkTkizXcuSlqmZLl7zXbIoMl1VIox89JaqQCwXyUlUz5j/7Jp91NSDDbQazKNtTogn5xvB3ifFA3isp4/0c8cr0lChCFvqQl6qaCeDfwLO7pOeBAvGK9pTKhZygGcwFGvBJyexBESmVC2myjKmKYneT0nohsymrqV4m8CrmlFYLmU2RcSjSvUJSWitkOkLPKDJ8tVLIQCCDkLYDjy2ltUJWuuSm6pTSSiGOfV6K+0j1HvFJk9JaIRYISZGQmsn6CplEPaRmKUkkpObhK4mERKTVqyyrSIgxJMQYEmIMCWmbEBVKtYGEYOslkhDqlyAhrGMholokxBgSYgwJaZoQFeqd9CUAU21Q+wOoICFrhl8EIYQQQgghhCAmzwFP3jk+Vt9ergAAAABJRU5ErkJggg=="
+
+event_list = {}  # Dictionary to store events
+user_list = {}  # Dictionary to store users
 possible_interests = [
     'Bouldering', 'Hiking', 'Pub Crawls', 'Chess', 'Picnics',
     'Museums', 'Boccia', 'Running', 'Board Games'
@@ -25,7 +26,7 @@ class Event:
         self.create_date = datetime.now()
         self.location = event_location
         self.host = event_host
-        self.participants = []  # Changed from visitors
+        self.participants = {}  # dict with userID key
         self.interests = event_interests
 
 
@@ -37,7 +38,7 @@ class User:
         self.date_of_birth = user_date_of_birth
         self.interests = user_interests
         self.email = user_email
-        self.events = []
+        self.events = {}  # dict with userID key
 
 
 @app.route('/create_event', methods=['POST'])
@@ -49,7 +50,7 @@ def create_event():
         # Set default values for attributes
         title = data.get('title', 'Untitled Event')
         description = data.get('description', 'No description provided')
-        picture = data.get('picture', DEFAULT_EVENTPIC)
+        picture = data.get('picture', DEFAULT_EVENT_PIC)
         date = data.get('date', None)
         latitude = data.get('latitude', 0.0)
         longitude = data.get('longitude', 0.0)
@@ -126,13 +127,13 @@ def create_user():
 
         # Set default values for attributes
         name = data.get('name', 'Anonymous')
-        profilepic = data.get('profile_pic', DEFAULT_PROFILEPIC)
-        dateofbirth = data.get('date_of_birth', None)
+        profile_pic = data.get('profile_pic', DEFAULT_PROFILE_PIC)
+        date_of_birth = data.get('date_of_birth', None)
         interests = data.get('interests', [])
         email = data.get('email', 'No email specified')
 
         # Create a new User object
-        new_user = User(name, profilepic, dateofbirth, interests, email)
+        new_user = User(name, profile_pic, date_of_birth, interests, email)
 
         # Add the user to the user_list dictionary
         user_list[new_user.id] = new_user
@@ -212,10 +213,13 @@ def join_event():
             return jsonify({'error': 'User already joined the event'}), 409
 
         # Add event to user's events and user to event's participants
-        user.events.append(event_id)
-        event.participants.append(user_id)
+        user.events[event_id] = event
+        event.participants[user_id] = user
 
-        return jsonify({'event_id': event_id, 'participants': event.participants}), 200
+        return jsonify({
+            'event_id': event_id,
+            'participants': list(event.participants.keys())
+        }), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -242,8 +246,8 @@ def leave_event():
             return jsonify({'error': 'User was not a participant'}), 400
 
         # Remove event from user's events and user from event's participants
-        user.events.remove(event_id)
-        event.participants.remove(user_id)
+        del user.events[event_id]
+        del event.participants[user_id]
 
         return jsonify({'message': 'User successfully left the event'}), 200
 
@@ -274,7 +278,8 @@ def get_event_list():
         'id': event.id,
         'title': event.title,
         'description': event.description,
-        'location': event.location
+        'location': event.location,
+        'participants': list(event.participants.keys())
     } for event_id, event in event_list.items()})
 
 
@@ -290,7 +295,7 @@ def get_profile(user_id):
         "date_of_birth": user.date_of_birth,
         "interests": user.interests,
         "email": user.email,
-        "events": user.events
+        "events": list(user.events.keys())
     })
 
 
@@ -308,14 +313,14 @@ def get_event(event_id):
         "create_date": event.create_date,
         "location": event.location,
         "host": event.host,
-        "participants": event.participants,
+        "participants": list(event.participants.keys()),
         "interests": event.interests
     })
 
 
-    @app.route('/add_baenke', methods=['POST'])
-    def add_baenke():
-        pass
+@app.route('/add_baenke', methods=['POST'])
+def add_baenke():
+    pass
 
 
 print('Success')
