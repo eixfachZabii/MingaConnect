@@ -15,11 +15,12 @@ possible_interests = [
     'Pub Crawls',
     'Chess',
     'Picnics',
-    'Museums', 
+    'Museums',
     'Boccia',
     'Running',
     'Board Games'
 ]
+
 
 class Event:
 
@@ -35,16 +36,18 @@ class Event:
         self.visitors = []
         self.interests = event_interests
 
+
 class User:
 
-    def __init__(self, user_name, user_profilepic, user_dateofbirth, user_interests, user_email):
+    def __init__(self, user_name, user_profile_pic, user_date_of_birth, user_interests, user_email):
         self.id = str(uuid.uuid4())
         self.username = user_name
-        self.profilepic = user_profilepic
-        self.dateofbirth = user_dateofbirth
+        self.profile_pic = user_profile_pic
+        self.date_of_birth = user_date_of_birth
         self.interests = user_interests
         self.email = user_email
         self.events = []
+
 
 @app.route('/create_event', methods=['POST'])
 def create_event():
@@ -61,7 +64,6 @@ def create_event():
         longitude = data.get('longitude', 0.0)
         host = data.get('host', 'Anonymous')
         interests = data.get('interests', [])
-
 
         # Create a new Event object
         new_event = Event(title, description, picture, date, [latitude, longitude], host, interests)
@@ -102,22 +104,23 @@ def update_event():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
+
 @app.route('/delete_event', methods=['DELETE'])
 def delete_event():
     try:
         # Parse JSON data from the request
         data = request.get_json()
-        
+
         for event in event_list:
             if event.id == data.get('event_id'):
                 event_list.remove(event)
                 return jsonify({'event_id': event.id}), 200
         return jsonify({'error': 'Event not found'}), 404
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
@@ -127,8 +130,8 @@ def create_user():
 
         # Set default values for attributes
         name = data.get('name', 'Anonymous')
-        profilepic = data.get('profilepic', DEFAULT_PROFILEPIC)
-        dateofbirth = data.get('dateofbirth', None)
+        profilepic = data.get('profile_pic', DEFAULT_PROFILEPIC)
+        dateofbirth = data.get('date_of_birth', None)
         interests = data.get('interests', [])
         email = data.get('email', 'No email specified')
 
@@ -144,6 +147,7 @@ def create_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/update_user', methods=['PUT'])
 def update_user():
     try:
@@ -158,10 +162,10 @@ def update_user():
                 if element.id == data.get('user_id'):
                     user = element
                     break
-        
+
         # Update the given attributes
         user.name = data.get('name', user.name)
-        user.profilepic = data.get('profilepic', user.profilepic)
+        user.profile_pic = data.get('profile_pic', user.profile_pic)
         user.date = data.get('date', user.date)
         user.location = data.get('location', user.location)
         user.host = data.get('host', user.host)
@@ -174,42 +178,45 @@ def update_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/delete_user', methods=['DELETE'])
 def delete_user():
     try:
         # Parse JSON data from the request
         data = request.get_json()
-        
+
         for user in user_list:
             if user.id == data.get('user_id'):
                 user_list.remove(user)
                 return jsonify({'user_id': user.id}), 200
         return jsonify({'error': 'User not found'}), 404
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
+
 @app.route('/join_event', methods=['POST'])
 def join_event():
     try:
         data = request.get_json()
         for user in user_list:
             if user.id == data.get('user_id'):
-            
+
                 for event in event_list:
                     if event.id == data.get('event_id'):
-                        
+
                         if event.id in user.events or user.id in event.participants:
                             return jsonify({'error': 'User already joined the event'}), 409
                         else:
                             user.event.append(event.id)
                             event.participants.append(user.id)
-                            return jsonify({'event_id': event.id,'participants': event.participants}), 200
+                            return jsonify({'event_id': event.id, 'participants': event.participants}), 200
                 return jsonify({'error': 'Event not found'}), 404
         return jsonify({'error': 'User not found'}), 404
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/leave_event', methods=['DELETE'])
 def leave_event():
@@ -234,20 +241,20 @@ def leave_event():
         return jsonify({'error': str(e)}), 500
 
 
-
-
 @app.route('/get_interests', methods=['GET'])
 def get_interests():
     return jsonify(possible_interests)
 
 
-@app.route('/get_userlist', methods=['GET'])
-def get_userlist():
+@app.route('/get_user_list', methods=['GET'])
+def get_user_list():
     return jsonify(user_list)
 
-@app.route('/get_eventlist', methods=['GET'])
-def get_eventlist():
+
+@app.route('/get_event_list', methods=['GET'])
+def get_event_list():
     return jsonify(event_list)
+
 
 @app.route('/get_profile/<user_id>', methods=['GET'])
 def get_profile(user_id):
@@ -257,15 +264,31 @@ def get_profile(user_id):
     return jsonify({
         "id": user.id,
         "username": user.username,
-        "profilepic": user.profilepic,
-        "dateofbirth": user.dateofbirth,
+        "profile_pic": user.profilepic,
+        "date_of_birth": user.dateofbirth,
         "interests": user.interests,
         "email": user.email,
         "events": user.events
     })
 
-@app.route('/get_event/<user_id>', methods=['GET'])
-def get_event(event):
-    return jsonify()
+
+@app.route('/get_event/<event_id>', methods=['GET'])
+def get_event(event_id):
+    event = next((event for event in event_list if event.id == event_id), None)
+    if not event:
+        return jsonify({"error": "Event not found"}), 404
+    return jsonify({
+        "id": event.id,
+        "title": event.title,
+        "description": event.description,
+        "picture": event.picture,
+        "event_date": event.event_date,
+        "create_date": event.create_date,
+        "location": event.location,
+        "host": event.host,
+        "visitors": event.visitors,
+        "interests": event.interests
+    })
+
 
 print('Success')
