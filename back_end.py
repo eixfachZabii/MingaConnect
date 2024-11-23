@@ -367,7 +367,7 @@ def add_baenke():
             longitude = row[6]
             locations.append([latitude, longitude])
         
-        if ()
+        #if ()
 
 
         title = 'Ratschbankerl'
@@ -387,3 +387,6 @@ print('Success')
 user_stadt_muenchen = User('Stadt München', DEFAULT_PROFILE_PIC, None, [], None)
 user_stadt_muenchen.set_id('stadt_muenchen')
 user_list[user_stadt_muenchen.id] = user_stadt_muenchen
+
+if __name__ == '__main__':
+    app.run(debug=True)
