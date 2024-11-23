@@ -67,7 +67,7 @@ Minga Connect is built using state-of-the-art tools to ensure scalability, perfo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/MingaConnect.git
+   git clone https://github.com/lucabzt/MingaConnect.git
    cd MingaConnect
 2. Install backend dependencies:
     ```bash
