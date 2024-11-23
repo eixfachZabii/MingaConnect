@@ -6,8 +6,17 @@ app = Flask(__name__)
 
 event_list = []
 user_list = []
-
-
+possible_intersts = [
+    'Bouldering',
+    'Hiking',
+    'Pub Crawls',
+    'Chess',
+    'Picnics',
+    'Museums', 
+    'Boccia',
+    'Running',
+    'Board Games'
+]
 
 class Event:
 
@@ -147,3 +156,7 @@ def update_user():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/get_interests', methods=['GET'])
+def get_interests():
+    return jsonify(possible_intersts)
