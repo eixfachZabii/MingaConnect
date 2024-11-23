@@ -32,6 +32,7 @@ Feed:
 Rank remaining events
 Write Baenke description
 Find Fotos
+Hardcode create_users etc
 
 Gute Kategorien
 
