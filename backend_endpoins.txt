@@ -1,13 +1,20 @@
-POST create_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst default-Werte)
-PUT update_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst bleiben Werte gleich)
-DELETE delete_event: 'event_id'
+✅ POST create_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst default-Werte)
+✅ PUT update_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst bleiben Werte gleich)
+✅ GET get_event: 'event_id'
+✅ DELETE delete_event: 'event_id'
 
-POST create_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst default-Werte)
-PUT update_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst bleiben Werte gleich)
-DELETE delete_user: 'user_id'
+✅ POST create_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst default-Werte)
+✅ PUT update_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst bleiben Werte gleich)
+✅ GET get_user: 'user_id'
+✅ DELETE delete_user: 'user_id'
 
-POST join_event: 'user_id', 'event_id'
-GET get_interests
+✅ POST join_event: 'user_id', 'event_id'
+✅ DELETE leave_event: 'user_id', 'event_id'
+
+✅ GET get_possible_interests
+
+✅ GET get_user_list
+✅ GET get_event_list
 
 
 
@@ -26,9 +33,3 @@ event chat
 
 
 TODO ROGG:
-
-get_user_list
-get_event_list
-
-get_profile/<user_id>
-get_event/<event_id>
