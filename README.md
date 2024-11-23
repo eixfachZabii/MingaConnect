@@ -4,7 +4,7 @@ On November 22-24, 2024, our team participated in the HackaTUM Hackathon in Muni
 Inspired by the City of Munich's challenge to address loneliness and foster community connections,
 we proudly presented our project Minga Connect.
 
-![Minga Connect Logo](Assets/images/MingaSmall.png)
+<img src="Assets/images/MingaSmall.png" alt="MingaSmall" width="1024" />
 
 ---
 
@@ -39,7 +39,8 @@ Munich is a vibrant city with 1.6 million residents. However, data shows:
 3. **Host Events**: Create your own events, from small meetups to large gatherings, and manage them with ease.
 4. **Find Like-Minded People**: Build your social network by connecting with others who share your passions.
 
-![Minga_Connect_Demo](Assets/images/DemoImage.jpeg)
+<img src="Assets/images/DemoImage.jpeg" alt="DemoImage" width="150" />
+
 
 ### Technologies
 
