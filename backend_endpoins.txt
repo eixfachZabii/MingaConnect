@@ -26,12 +26,11 @@ Feed:
         filter_date
         filter_location
 
-get_feed (filter, location)
+Gute Kategorien
+
 
 
 search_event
 
 event chat
-
-
-TODO ROGG:
+#Hardcoded Events:
