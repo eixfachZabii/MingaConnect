@@ -283,8 +283,8 @@ def get_event_list():
     } for event_id, event in event_list.items()})
 
 
-@app.route('/get_profile', methods=['GET'])
-def get_profile():
+@app.route('/get_user', methods=['GET'])
+def get_user():
     try:
         # Parse JSON data from the request
         data = request.get_json()
