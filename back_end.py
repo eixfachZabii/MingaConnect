@@ -24,14 +24,14 @@ possible_interests = [
 
 class Event:
 
-    def __init__(self, event_title, event_description, event_picture, event_date, event_location, event_host, event_interests):
+    def __init__(self, event_title, event_description, event_picture, event_date, event_locations, event_host, event_interests):
         self.id = str(uuid.uuid4())
         self.title = event_title
         self.description = event_description
         self.picture = event_picture
         self.event_date = event_date
         self.create_date = datetime.now()
-        self.location = event_location
+        self.locations = event_locations
         self.host = event_host
         self.visitors = []
         self.interests = event_interests
@@ -60,13 +60,17 @@ def create_event():
         description = data.get('description', 'No description provided')
         picture = data.get('picture', DEFAULT_EVENTPIC)
         date = data.get('date', None)
-        latitude = data.get('latitude', 0.0)
-        longitude = data.get('longitude', 0.0)
+        latitudes = data.get('latitudes', 0.0)
+        longitudes = data.get('longitudes', 0.0)
         host = data.get('host', 'Anonymous')
         interests = data.get('interests', [])
 
+        locations = []
+        for i in range (len(latitudes)):
+            locations.append([latitudes[i], longitudes[0]])
+
         # Create a new Event object
-        new_event = Event(title, description, picture, date, [latitude, longitude], host, interests)
+        new_event = Event(title, description, picture, date, locations, host, interests)
 
         # Add the event to the event_list
         event_list.append(new_event)
@@ -94,10 +98,17 @@ def update_event():
         event.title = data.get('title', event.title)
         event.description = data.get('description', event.description)
         event.picture = data.get('picture', event.picture)
-        event.location[0] = data.get('latitude', event.latitude)
-        event.location[1] = data.get('longitude', event.longitude)
         event.host = data.get('host', event.host)
         event.interests = data.get('interests', event.interests)
+
+        if 'latitudes' in data:
+            if 'longitudes' in data:
+                latitudes = data.get('latitudes')
+                longitudes = data.get('longitudes')
+                locations = []
+                for i in range (len(d)):
+                    locations.append([latitudes[i], longitudes[0]])
+                event.locations = locations
 
         # Return the event_id
         return jsonify({'event_id': event.id}), 200
