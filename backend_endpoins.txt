@@ -20,7 +20,7 @@
 
 TODO Paul:
 
-Profilbilder
+Feed:
 
 
 get_feed (filter, location)

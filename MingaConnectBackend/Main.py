@@ -102,7 +102,7 @@ def add_baenke():
         title = 'Ratschbankerl'
         description = 'TODO'
         picture = 'TODO'
-        date = None
+        date = datetime.now()
         host = 'stadt_muenchen'
         interests = ['Meet new people']
         baenke = Events.Event(title, description, picture, date, locations, host, interests)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     user_stadt_muenchen.set_id('stadt_muenchen')
     Users.user_list[user_stadt_muenchen.id] = user_stadt_muenchen
 
-    dummy = Events.Event("title", "description", "pic", None, [[48.29816, 11.70607]], "None", ["Bouldering"])
+    dummy = Events.Event("title", "description", "pic", datetime.now(), [[48.29816, 11.70607]], "None", ["Bouldering"])
     Events.event_list[dummy.id] = dummy
     add_baenke()
 

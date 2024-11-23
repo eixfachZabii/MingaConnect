@@ -108,9 +108,9 @@ def get_event_list():
         'title': event.title,
         'description': event.description,
         #'picture': event.picture,
-        #'event_date': str(event.event_date),
-        #'create_date': str(event.create_date),
-        #'host': event.host,
+        'event_date': event.event_date.strftime(date_format),
+        'create_date': event.create_date.strftime(date_format),
+        'host': event.host,
         'location': event.location,
         'interests': event.interests
         #'participants': list(event.participants.keys())
@@ -122,7 +122,7 @@ def get_event():
     try:
         data = request.get_json()
 
-                # Retrieve the event from the dictionary
+        # Retrieve the event from the dictionary
         event = event_list.get(data.get('event_id', '0'))
         if not event:
             return jsonify({'error': 'Event not found'}), 404
@@ -132,8 +132,8 @@ def get_event():
         'title': event.title,
         'description': event.description,
         'picture': event.picture,
-        'event_date': str(event.event_date),
-        'create_date': str(event.create_date),
+        'event_date': event.event_date.strftime(date_format),
+        'create_date': event.create_date.strftime(date_format),
         'host': event.host,
         'interests': event.interests,
         'location': event.location,
