@@ -43,6 +43,8 @@ class User:
         self.interests = user_interests
         self.email = user_email
         self.events = {}  # dict with userID key
+    def set_id(self, id):
+        self.id = id
 
 
 @app.route('/create_event', methods=['POST'])
@@ -379,8 +381,9 @@ def add_baenke():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
 print('Success')
 
-user_stadt_muenchen = User('Stadt München', DEFAULT_PROFILEPIC, None, [], None)
-
-
+user_stadt_muenchen = User('Stadt München', DEFAULT_PROFILE_PIC, None, [], None)
+user_stadt_muenchen.set_id('stadt_muenchen')
+user_list[user_stadt_muenchen.id] = user_stadt_muenchen
