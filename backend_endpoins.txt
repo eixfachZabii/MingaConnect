@@ -2,8 +2,8 @@ POST create_event: 'title', 'description', 'picture', 'date', 'latitude', 'longi
 PUT update_event: 'title', 'description', 'picture', 'date', 'latitude', 'longitude', 'host', 'interests' (Sonst bleiben Werte gleich)
 DELETE delete_event: 'event_id'
 
-POST create_user: 'name', 'profilepic', 'dateofbirth', 'interests', 'email' (Sonst default-Werte)
-PUT update_user: 'name', 'profilepic', 'dateofbirth', 'interests', 'email' (Sonst bleiben Werte gleich)
+POST create_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst default-Werte)
+PUT update_user: 'name', 'profile_pic', 'date_of_birth', 'interests', 'email' (Sonst bleiben Werte gleich)
 DELETE delete_user: 'user_id'
 
 POST join_event: 'user_id', 'event_id'
@@ -28,8 +28,8 @@ event chat
 
 TODO ROGG:
 
-get_userlist
-get_eventlist
+get_user_list
+get_event_list
 
-get_profile
-get_event
+get_profile/<user_id>
+get_event/<event_id>
