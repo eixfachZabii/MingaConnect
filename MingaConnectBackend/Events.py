@@ -104,7 +104,7 @@ def delete_event():
         return jsonify({'error': str(e)}), 500
 
 
-@events_blueprint.route('/get_event_list', methods=['GET'])
+@events_blueprint.route('/get_event_list', methods=['POST'])
 def get_event_list():
     try:
         data = request.get_json()
@@ -112,28 +112,27 @@ def get_event_list():
         # Create filtered list
         filtered_list = {}
         filter_interests = data.get('filter_interests', possible_interests)
-        filter_dates = data.get('filter_dates', None)
+        '''filter_dates = data.get('filter_dates', None)
         if (filter_dates):
             filter_dates[0] = datetime.strptime(filter_dates[0], date_format)
             filter_dates[1] = datetime.strptime(filter_dates[1], date_format)
         filter_location = data.get('filter_location', None)
-        filter_location_radius = data.get('filter_location_radius', 0)
+        filter_location_radius = data.get('filter_location_radius', 0)'''
 
         for event_id, event in event_list.items():
             if all(interest not in filter_interests for interest in event.interests):
                 continue
-            if filter_dates:
+            '''if filter_dates:
                 if (event.event_date < filter_dates[0]) or (event.event_date > filter_dates[1]):
                     continue
-            if filter_location and filter_location_radius != 0:
-                if geodesic((filter_location[0], filter_location[1]),(event.location[0], event.location[1])).meters > filter_location_radius:
-                    continue
+            if (filter_location) and (filter_location_radius != 0):
+                if geodesic((filter_location[0], filter_location[1]),(event.location[0], event.location[1])).kilometers > filter_location_radius:
+                    continue'''
             filtered_list[event_id] = event
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-    # Convert events to a list of dictionaries for JSON serialization
-    return jsonify({event_id: {
+        
+        
+        # Convert events to a list of dictionaries for JSON serialization
+        return jsonify({event_id: {
         'id': event.id,
         'title': event.title,
         'description': event.description,
@@ -144,10 +143,12 @@ def get_event_list():
         'location': event.location,
         'interests': event.interests,
         'participants': list(event.participants.keys())
-    } for event_id, event in event_list.items()})
+        } for event_id, event in filtered_list.items()})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
-@events_blueprint.route('/get_event', methods=['GET'])
+@events_blueprint.route('/get_event', methods=['POST'])
 def get_event():
     try:
         data = request.get_json()
