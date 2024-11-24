@@ -3,7 +3,7 @@ import SwiftUI
 struct InterestSelection: View {
     @Binding var isPresented: Bool
     @State private var selectedInterests: Set<String> = []
-    let interests = ["Bouldering", "Hiking", "Pub Crawls", "Chess", "Picnics", "Museums", "Boat", "Running", "Board Games", "Meet new people"]
+    let interests = ["Bouldering", "Hiking", "Meet new people","Pub Crawls", "Chess", "Picnics", "Museums", "Boat", "Running", "Board Games"x]
     
     var body: some View {
         VStack(spacing: 20) {
