@@ -1,5 +1,5 @@
 # Minga Connect 💛🥨 - HackaTUM 2024 Project
-**Product Demo: [https://youtube.com/shorts/d7BQ03uaw7c?feature=share](https://youtube.com/shorts/d7BQ03uaw7c?feature=share)
+**Product Demo:** [https://youtube.com/shorts/d7BQ03uaw7c?feature=share](https://youtube.com/shorts/d7BQ03uaw7c?feature=share)
 
 On November 22-24, 2024, our team participated in the HackaTUM Hackathon in Munich. 
 Inspired by the City of Munich's challenge to address loneliness and foster community connections,
