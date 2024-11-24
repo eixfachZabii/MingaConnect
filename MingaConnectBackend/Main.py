@@ -16,15 +16,16 @@ app.register_blueprint(Events.events_blueprint, url_prefix='/')
 def join_event():
     try:
         data = request.get_json()
+        print(data)
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(data.get('user_id', '0'))
+        user = Users.user_list.get(data.get('user_id', None))
         if not user:
             return jsonify({'error': 'User not found'}), 404
         
-        event = Events.event_list.get(data.get('event_id', '0'))
+        event = Events.event_list.get(data.get('event_id', None))
         if not event:
-            return jsonify({'error': 'Event not found'}), 404
+            return jsonify({'error': 'Event not found'}), 405
 
         # Check if user is already participating
         if event.id in user.events or user.id in event.participants:
@@ -34,10 +35,7 @@ def join_event():
         user.events[event.id] = event
         event.participants[user.id] = user
 
-        return jsonify({
-            'event_id': event.id,
-            'participants': list(event.participants.keys())
-        }), 200
+        return jsonify(), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -49,13 +47,13 @@ def leave_event():
         data = request.get_json()
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(data.get('user_id', '0'))
+        user = Users.user_list.get(data.get('user_id', None))
         if not user:
             return jsonify({'error': 'User not found'}), 404
         
-        event = Events.event_list.get(data.get('event_id', '0'))
+        event = Events.event_list.get(data.get('event_id', None))
         if not event:
-            return jsonify({'error': 'Event not found'}), 404
+            return jsonify({'error': 'Event not found'}), 405
 
         # Check if user is participating
         if event.id not in user.events or user.id not in event.participants:
@@ -65,7 +63,7 @@ def leave_event():
         del user.events[event.id]
         del event.participants[user.id]
 
-        return jsonify({'message': 'User successfully left the event'}), 200
+        return jsonify(), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -132,6 +130,10 @@ if __name__ == '__main__':
     Users.user_list[x.id] = x
     x = Users.User('Jack', Users.DEFAULT_PROFILE_PIC, '16.10.1989', [], 'jack@gmail.com')
     Users.user_list[x.id] = x
+    x = Users.User('Matthi', Users.DEFAULT_PROFILE_PIC, '16.10.1989', [], 'jack@gmail.com')
+    x.set_id('-1')
+    Users.user_list[x.id] = x
+
 
     
     user_id_1 = list(Users.user_list.keys())[1]

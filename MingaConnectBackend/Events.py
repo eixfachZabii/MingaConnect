@@ -40,7 +40,7 @@ def create_event():
         title = data.get('title', 'Untitled Event')
         description = data.get('description', 'No description provided')
         picture = data.get('picture', DEFAULT_EVENT_PIC)
-        date = data.get('date', None)
+        date = data.get('event_date', None)
         if (date):
             date = datetime.strptime(date, date_format)
         location = data.get('location', [])
@@ -75,8 +75,8 @@ def update_event():
         event.description = data.get('description', event.description)
         event.picture = data.get('picture', event.picture)
         event.location = data.get('location', event.location)
-        if (data.get('date')):
-            event.date = datetime.strptime(data.get('date'), date_format)
+        if (data.get('event_date')):
+            event.date = datetime.strptime(data.get('event_date'), date_format)
         event.host = data.get('host', event.host)
         event.interests = data.get('interests', event.interests)
         
@@ -106,28 +106,31 @@ def delete_event():
 
 @events_blueprint.route('/get_event_list', methods=['GET'])
 def get_event_list():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    # Create filtered list
-    filtered_list = {}
-    filter_interests = data.get('filfilter_interests', possible_interests)
-    filter_dates = data.get('filter_dates', None)
-    if (filter_dates):
-        filter_dates[0] = datetime.strptime(filter_dates[0], date_format)
-        filter_dates[1] = datetime.strptime(filter_dates[1], date_format)
-    filter_location = data.get('filter_location', None)
-    filter_location_radius = data.get('filter_location_radius', 0)
+        # Create filtered list
+        filtered_list = {}
+        filter_interests = data.get('filter_interests', possible_interests)
+        filter_dates = data.get('filter_dates', None)
+        if (filter_dates):
+            filter_dates[0] = datetime.strptime(filter_dates[0], date_format)
+            filter_dates[1] = datetime.strptime(filter_dates[1], date_format)
+        filter_location = data.get('filter_location', None)
+        filter_location_radius = data.get('filter_location_radius', 0)
 
-    for event_id, event in event_list.items():
-        if all(interest not in filter_interests for interest in event.interests):
-            continue
-        if filter_dates:
-            if (event.event_date < filter_dates[0]) or (event.event_date > filter_dates[1]):
+        for event_id, event in event_list.items():
+            if all(interest not in filter_interests for interest in event.interests):
                 continue
-        if filter_location and filter_location_radius != 0:
-            if geodesic((filter_location[0], filter_location[1]),(event.location[0], event.location[1])).meters > filter_location_radius:
-                continue
-        filtered_list[event_id] = event
+            if filter_dates:
+                if (event.event_date < filter_dates[0]) or (event.event_date > filter_dates[1]):
+                    continue
+            if filter_location and filter_location_radius != 0:
+                if geodesic((filter_location[0], filter_location[1]),(event.location[0], event.location[1])).meters > filter_location_radius:
+                    continue
+            filtered_list[event_id] = event
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
     # Convert events to a list of dictionaries for JSON serialization
     return jsonify({event_id: {
@@ -139,9 +142,9 @@ def get_event_list():
         'create_date': event.create_date.strftime(date_format),
         'host': event.host,
         'location': event.location,
-        'interests': event.interests
-        #'participants': list(event.participants.keys())
-    } for event_id, event in filtered_list.items()})
+        'interests': event.interests,
+        'participants': list(event.participants.keys())
+    } for event_id, event in event_list.items()})
 
 
 @events_blueprint.route('/get_event', methods=['GET'])
