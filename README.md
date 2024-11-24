@@ -43,7 +43,7 @@ Munich is a vibrant city with 1.6 million residents. However, data shows:
 
 <div style="display: flex; justify-content: left; gap: 20px; margin: 20px 0;">
     <img src="Assets/images/map.png" alt="map" width="150" />
-    <img src="Assets/images/Event.png" alt="event" width="150" style="position: relative; top: +1px;" />
+    <img src="Assets/images/Event.png" alt="event" width="150" style="position: relative; top: +5px;" />
 </div>
 
 ### Technologies
