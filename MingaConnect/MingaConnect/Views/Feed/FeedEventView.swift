@@ -3,9 +3,20 @@ import CoreLocation
 import MapKit
 import PhotosUI
 
+import SwiftUI
+import CoreLocation
+import MapKit
+import PhotosUI
+
 struct FeedEventView: View {
     @State private var isPresentingCreateEventSheet = false
-    
+    @State private var isPresentingFilterSheet = false
+    @Binding var feedUpdated: Bool
+    @Binding var selectedInterests: [String]
+    @Binding var dateRange: DateRange
+    @Binding var radius: Double
+    var userInterests: [String]
+
     var body: some View {
         ScrollView {
             VStack {
@@ -13,44 +24,56 @@ struct FeedEventView: View {
                     Text("Explore")
                         .font(.largeTitle)
                         .fontWeight(.heavy)
-                        .foregroundStyle(Color("AccentColor"))
                         .padding()
-                    
+
                     Spacer(minLength: 50)
-                    
-                    Button(action: {
-                        isPresentingCreateEventSheet = true
-                    }) {
-                        Text("Create Event")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color("AccentColor"))
-                            .cornerRadius(10)
-                            .foregroundColor(Color("Background"))
+                    HStack(spacing: 10) {
+                        // Filter Button
+                        Button(action: {
+                            isPresentingFilterSheet = true
+                        }) {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                                .foregroundStyle(.blue)
+                                .font(.title)
+                        }
+                        .sheet(isPresented: $isPresentingFilterSheet) {
+                            FilterView(
+                                selectedInterests: $selectedInterests,
+                                dateRange: $dateRange,
+                                radius: $radius,
+                                userInterests: userInterests
+                            )
+                        }
+
+                        // Create Event Button
+                        Button(action: {
+                            isPresentingCreateEventSheet = true
+                        }) {
+                            Image(systemName: "plus.app")
+                                .foregroundStyle(.blue)
+                                .font(.title)
+                        }
+                        .sheet(isPresented: $isPresentingCreateEventSheet) {
+                            CreateEventView(feedUpdated: $feedUpdated)
+                        }
                     }
                     .padding()
                 }
-                
+
                 Divider()
-                
+
                 // Example event placeholders
                 Text("Event 1")
-                    .foregroundStyle(.white)
                 Text("Event 2")
-                    .foregroundStyle(.white)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("Background"))
-        .sheet(isPresented: $isPresentingCreateEventSheet) {
-            CreateEventView()
-        }
     }
 }
 
 struct CreateEventView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Binding var feedUpdated: Bool
     @State private var title = ""
     @State private var description = ""
     @State private var host = ""
@@ -62,7 +85,10 @@ struct CreateEventView: View {
     @State private var selectedDate = Date()
     
     // Interests Data
-    @State private var interests = ["Football", "Gym", "Cooking", "Travel", "Music", "Movies", "Reading", "Yoga", "Technology", "Fashion", "DIY Projects", "Animal Care", "Martial Arts"]
+    @State private var interests = [
+        "Bouldering", "Hiking", "Pub Crawls", "Chess", "Picnics",
+        "Museums", "Boat", "Running", "Board Games", "Meet new people"
+    ]
     @State private var selectedInterests: [String] = []
     @State private var isDropdownExpanded = false
     
@@ -204,6 +230,9 @@ struct CreateEventView: View {
                 presentationMode.wrappedValue.dismiss()
             })
         }
+        .onDisappear {
+            feedUpdated.toggle()
+        }
     }
     
     // Toggle interest selection
@@ -235,12 +264,18 @@ struct CreateEventView: View {
             interests: selectedInterests
         )
         
-        // Mock API call
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isSubmitting = false
-            print("Event submitted: \(newEvent)")
-            presentationMode.wrappedValue.dismiss()
-        }
+        APIService.shared.createEvent(event: newEvent) { result in
+                    DispatchQueue.main.async {
+                        isSubmitting = false
+                        switch result {
+                        case .success(let eventID):
+                            print("Event created successfully with ID: \(eventID)")
+                            presentationMode.wrappedValue.dismiss()
+                        case .failure(let error):
+                            errorMessage = error.localizedDescription
+                        }
+                    }
+                }
     }
     
     private func formatDateToString(_ date: Date) -> String {
@@ -462,8 +497,6 @@ struct ImagePicker: UIViewControllerRepresentable {
 
 // Example Event struct and APIService for completeness
 
-
-
-#Preview {
-    FeedEventView()
-}
+/*#Preview {
+    FeedEventView(feedUpdated: .constant(true))
+}*/
