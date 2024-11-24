@@ -4,6 +4,7 @@ import MapKit
 struct FeedMapView: View {
     @Binding var events: [Event]
     @Binding var coordinates: [[Double]]
+    @Binding var feedUpdated: Bool
     @State private var position: MapCameraPosition = .automatic
     @State private var selectedEvent: Event?
     @State private var isDetailSheetPresented = false
@@ -13,9 +14,10 @@ struct FeedMapView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
     )
 
-    init(events: Binding<[Event]>, coordinates: Binding<[[Double]]>) {
+    init(events: Binding<[Event]>, coordinates: Binding<[[Double]]>, feedUpdated: Binding<Bool>) {
         self._events = events
         self._coordinates = coordinates
+        self._feedUpdated = feedUpdated
     }
 
     var body: some View {
@@ -33,9 +35,9 @@ struct FeedMapView: View {
                 }
                 ForEach(events.indices, id: \.self) { eventIndex in
                     let event = events[eventIndex]
-                    ForEach(event.location.indices, id: \.self) { locationIndex in
-                        let latitude = event.location[locationIndex][0]
-                        let longitude = event.location[locationIndex][1]
+                    //ForEach(event.location.indices, id: \.self) { locationIndex in
+                        let latitude = event.location/*[locationIndex]*/[0]
+                        let longitude = event.location/*[locationIndex]*/[1]
 
                         Annotation("\(event.title)", coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)) {
                             ZStack {
@@ -50,7 +52,7 @@ struct FeedMapView: View {
                                 isDetailSheetPresented = true
                             }
                         }
-                    }
+                    //}
                 }
             }
             .mapControls {
@@ -59,12 +61,12 @@ struct FeedMapView: View {
                 MapScaleView()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("Background"))
+        //.frame(maxWidth: .infinity, maxHeight: .infinity)
+        //.background(Color("Background"))
         .sheet(item: $selectedEvent, onDismiss: {
             zoomOut()
         }) { event in
-            EventDetailView(event: event)
+            EventDetailView(event: event, feedUpdated: $feedUpdated)
                 .presentationDetents([.medium, .large])
         }
     }
@@ -72,7 +74,7 @@ struct FeedMapView: View {
     private func mapToImage(type: String) -> String {
         switch type {
         case "Meet new people":
-            return "person.3.fill"
+            return "chair.lounge.fill"
         case "Bouldering":
             return "figure.climbing"
         case "Hiking":

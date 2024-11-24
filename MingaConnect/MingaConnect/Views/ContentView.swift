@@ -13,14 +13,26 @@ struct ContentView: View {
     
     var body: some View {
             VStack {
-                FeedView(loggedIn: $loggedIn)
+                if loggedIn {
+                    Map()
+                } else {
+                    FeedView(loggedIn: $loggedIn)
+                }
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color("Background"))
-            /*.sheet(isPresented: $loggedIn) {
-                SheetNavigator(isPresented: $loggedIn)
-            }*/
+            //.background(Color("Background"))
+            .sheet(isPresented: $loggedIn) {
+                if loggedIn {
+                    SheetNavigator(isPresented: $loggedIn)
+                        .onDisappear {
+                            self.loggedIn = false
+                        }
+                } else {
+                    
+                }
+                
+            }
         
        
     }
@@ -40,11 +52,11 @@ struct SheetNavigator: View {
             switch currentView {
             case .basicDataInput:
                 BasicDataInput(currentView: $currentView)
-                    .background(Color("Background").ignoresSafeArea())
+                   // .background(Color("Background").ignoresSafeArea())
 
             case .interestSelection:
                 InterestSelection(isPresented: $isPresented)
-                    .background(Color("Background").ignoresSafeArea())
+                    //.background(Color("Background").ignoresSafeArea())
 
             }
 

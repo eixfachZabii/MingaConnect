@@ -15,8 +15,8 @@ struct Event: Codable, Identifiable {
     //let picture: String
     let event_date: String?
     //let createDate: String?*/
-    let location: [[Double]]
+    let location: [Double]
     let host: String
-   //let participants: [String]
+    let participants: [String]
     let interests: [String]
 }
