@@ -3,45 +3,46 @@ import SwiftUI
 struct InterestSelection: View {
     @Binding var isPresented: Bool
     @State private var selectedInterests: Set<String> = []
-    let interests = ["Football", "Gym", "Cooking", "Travel", "Music", "Movies", "Reading", "Yoga", "Technology", "Fashion", "DIY Projects", "Animal Care", "Martial Arts"]
+    let interests = ["Bouldering", "Hiking", "Pub Crawls", "Chess", "Picnics", "Museums", "Boat", "Running", "Board Games", "Meet new people"]
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Select Your Interests")
-                .font(.largeTitle)
-                .fontWeight(.heavy)
-                .foregroundStyle(Color("AccentColor"))
-                .padding(.top, 20)
+            
             
             // Profile Image
-            Image("Profil") // Replace with your image asset name
+            Image("Logo") // Replace with your image asset name
                 .resizable()
                 .frame(width: 200, height: 200)
                 .scaledToFit()
                 .clipShape(Circle())
                 .overlay(
                     Circle()
-                        .stroke(Color("Feature"), lineWidth: 10)
+                        .stroke(.blue, lineWidth: 10)
                 )
                 .shadow(radius: 10)
-            
+                .padding(.top, 30)
+
+            Text("Select Your Interests")
+                .font(.title)
+                .fontWeight(.heavy)
+                .foregroundStyle(.blue)
             ScrollView {
                 FlowLayout(items: interests, spacing: 10) { interest in
                     Text(interest)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(selectedInterests.contains(interest) ? Color.yellow : Color("Feature"))
-                        .foregroundColor(.black)
+                        .background(selectedInterests.contains(interest) ? Color.blue : Color.secondary)
+                        .foregroundColor(selectedInterests.contains(interest) ? Color.white : Color.black)
                         .cornerRadius(20)
                         .onTapGesture {
                             toggleInterest(interest)
                         }
                         .animation(.easeInOut, value: selectedInterests)
                 }
-                .padding()
+                //.padding()
             }
             
-            Spacer()
+           // Spacer()
             
             Button(action: {
                 // Close the sheet
@@ -51,15 +52,15 @@ struct InterestSelection: View {
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(selectedInterests.isEmpty ? Color.gray : Color.yellow)
+                    .background(selectedInterests.isEmpty ? Color.gray : Color.blue)
                     .cornerRadius(10)
-                    .foregroundColor(selectedInterests.isEmpty ? .white : Color("Background"))
+                    .foregroundColor(selectedInterests.isEmpty ? .black : Color.white)
             }
             .disabled(selectedInterests.isEmpty)
             .padding(.horizontal)
             .padding(.bottom, 20)
         }
-        .background(Color("Background").ignoresSafeArea())
+       // .background(Color("Background").ignoresSafeArea())
     }
     
     private func toggleInterest(_ interest: String) {

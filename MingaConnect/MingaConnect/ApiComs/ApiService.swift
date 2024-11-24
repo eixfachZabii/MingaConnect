@@ -90,8 +90,33 @@ class APIService {
     // Fetch All Events
     func getEvents(completion: @escaping (Result<[String: Event], Error>) -> Void) {
         let endpoint = "/get_event_list"
-        request(endpoint: endpoint, method: "GET", completion: completion)
+        var bodyDict: [String: Any] = [:]
+        let body = try? JSONSerialization.data(withJSONObject: bodyDict, options: [])
+
+        request(endpoint: endpoint, method: "POST", body: body, completion: completion)
     }
+    
+    func getFilteredEvents(filterInterests: [String]? = nil, filterDates: [String]? = nil, filterLocation: [Double]? = nil, filterRadius: Int? = nil, completion: @escaping (Result<[String: Event], Error>) -> Void) {
+            let endpoint = "/get_event_list"
+            
+            var bodyDict: [String: Any] = [:]
+            if let filterInterests = filterInterests {
+                bodyDict["filter_interests"] = filterInterests
+            }
+            if let filterDates = filterDates {
+                bodyDict["filter_dates"] = filterDates
+            }
+            if let filterLocation = filterLocation {
+                bodyDict["filter_location"] = filterLocation
+            }
+            if let filterRadius = filterRadius {
+                bodyDict["filter_location_radius"] = filterRadius
+            }
+            
+            let body = try? JSONSerialization.data(withJSONObject: bodyDict, options: [])
+            
+            request(endpoint: endpoint, method: "POST", body: body, completion: completion)
+        }
 
     // Create User
     func createUser(user: User, completion: @escaping (Result<String, Error>) -> Void) {
@@ -117,6 +142,7 @@ class APIService {
     func joinEvent(userID: String, eventID: String, completion: @escaping (Result<String, Error>) -> Void) {
         let endpoint = "/join_event"
         let body = try? JSONEncoder().encode(["user_id": userID, "event_id": eventID])
+        print(eventID)
         request(endpoint: endpoint, method: "POST", body: body) { (result: Result<[String: String], Error>) in
             switch result {
             case .success(let response):
