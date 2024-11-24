@@ -39,8 +39,8 @@ Munich is a vibrant city with 1.6 million residents. However, data shows:
 3. **Host Events**: Create your own events, from small meetups to large gatherings, and manage them with ease.
 4. **Find Like-Minded People**: Build your social network by connecting with others who share your passions.
 
-<img src="Assets/images/DemoImage.jpeg" alt="DemoImage" width="150" />
-
+<img src="Assets/images/map.png" alt="map" width="150" />
+<img src="Assets/images/Event.png" alt="event" width="150" />
 
 ### Technologies
 
