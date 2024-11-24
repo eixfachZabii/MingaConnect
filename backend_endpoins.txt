@@ -14,21 +14,26 @@
 ✅ GET get_possible_interests
 
 ✅ GET get_user_list
-✅ GET get_event_list
+✅ GET get_event_list: 'filter_interests' (String list) (all interests the user want to see),
+                        'filter_dates' (Two dates as String list) (Allows events between the two chosen dates)
+                        'filter_location' (Latitude, longitude as Double list) (location of the user)
+                        'filter_location_radius' (int) (Allowed radius around the users loation) (In meters, can be changed)
+                        (No input means no filter)
 
 
 
 TODO Paul:
 
-Profilbilder
+Feed:
+    Filter etc:
+        #filter_interest
+        #filter_date
+        #filter_location
 
+Rank remaining events?
 
-get_feed (filter, location)
+Find Fotos
 
 
 search_event
-
 event chat
-
-
-TODO ROGG:

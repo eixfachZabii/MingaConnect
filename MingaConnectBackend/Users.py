@@ -89,7 +89,7 @@ def delete_user():
         return jsonify({'error': str(e)}), 500
     
    
-@users_blueprint.route('/get_user_list', methods=['GET'])
+@users_blueprint.route('/get_user_list', methods=['POST'])
 def get_user_list():
     # Convert users to a list of dictionaries for JSON serialization
     return jsonify({user_id: {
@@ -103,7 +103,7 @@ def get_user_list():
     } for user_id, user in user_list.items()})
 
 
-@users_blueprint.route('/get_user', methods=['GET'])
+@users_blueprint.route('/get_user', methods=['POST'])
 def get_user():
     try:
         data = request.get_json()

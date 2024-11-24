@@ -12,39 +12,30 @@ app = Flask(__name__)
 app.register_blueprint(Users.users_blueprint, url_prefix='/')
 app.register_blueprint(Events.events_blueprint, url_prefix='/')
 
-possible_interests = [
-    'Bouldering', 'Hiking', 'Pub Crawls', 'Chess', 'Picnics',
-    'Museums', 'Boccia', 'Running', 'Board Games', 'Meet new people'
-]
-
 @app.route('/join_event', methods=['POST'])
 def join_event():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')
-        event_id = data.get('event_id')
+        print(data)
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(user_id)
-        event = Events.event_list.get(event_id)
-
+        user = Users.user_list.get(data.get('user_id', None))
         if not user:
             return jsonify({'error': 'User not found'}), 404
+        
+        event = Events.event_list.get(data.get('event_id', None))
         if not event:
-            return jsonify({'error': 'Event not found'}), 404
+            return jsonify({'error': 'Event not found'}), 405
 
         # Check if user is already participating
-        if event_id in user.events or user_id in event.participants:
+        if event.id in user.events or user.id in event.participants:
             return jsonify({'error': 'User already joined the event'}), 409
 
         # Add event to user's events and user to event's participants
-        user.events[event_id] = event
-        event.participants[user_id] = user
+        user.events[event.id] = event
+        event.participants[user.id] = user
 
-        return jsonify({
-            'event_id': event_id,
-            'participants': list(event.participants.keys())
-        }), 200
+        return jsonify(), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -54,27 +45,25 @@ def join_event():
 def leave_event():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')
-        event_id = data.get('event_id')
 
         # Retrieve user and event from dictionaries
-        user = Users.user_list.get(user_id)
-        event = Events.event_list.get(event_id)
-
+        user = Users.user_list.get(data.get('user_id', None))
         if not user:
             return jsonify({'error': 'User not found'}), 404
+        
+        event = Events.event_list.get(data.get('event_id', None))
         if not event:
-            return jsonify({'error': 'Event not found'}), 404
+            return jsonify({'error': 'Event not found'}), 405
 
         # Check if user is participating
-        if event_id not in user.events or user_id not in event.participants:
+        if event.id not in user.events or user.id not in event.participants:
             return jsonify({'error': 'User was not a participant'}), 400
 
         # Remove event from user's events and user from event's participants
-        del user.events[event_id]
-        del event.participants[user_id]
+        del user.events[event.id]
+        del event.participants[user.id]
 
-        return jsonify({'message': 'User successfully left the event'}), 200
+        return jsonify(), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -82,7 +71,7 @@ def leave_event():
 
 @app.route('/get_possible_interests', methods=['GET'])
 def get_possible_interests():
-    return jsonify(possible_interests)
+    return jsonify(Events.possible_interests)
 
 
 def add_baenke():
@@ -98,29 +87,126 @@ def add_baenke():
             longitude = float(row[6])
             locations.append([latitude, longitude])
 
-
         title = 'Ratschbankerl'
-        description = 'TODO'
-        picture = 'TODO'
+        description = 'A place to sit and talk: The ‘Ratschbankerl’ is intended to set an example against loneliness and create places to meet in Munich in all social regions. A suitable bench was chosen in each district and labelled ‘Ratschbankerl’. Anyone who sits down on it invites others to have a chat and also makes themselves available as a conversation partner.'
+        picture = 'Ratschbankerl picture'
         date = None
-        host = 'stadt_muenchen'
+        host = user_stadt_muenchen.id
         interests = ['Meet new people']
-        baenke = Events.Event(title, description, picture, date, locations, host, interests)
-        Events.event_list[baenke.id] = baenke
-
-        return baenke.id
+        for location in locations:
+            baenke = Events.Event(title, description, picture, date, location, host, interests)
+            Events.event_list[baenke.id] = baenke
+        return
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print("Something went wrong while adding Baenke: " + str(e))
+        return
     
 if __name__ == '__main__':
-    user_stadt_muenchen = Users.User('Stadt München', "pic", None, [], None)
-    user_stadt_muenchen.set_id('stadt_muenchen')
+    # Adds Bänke
+    user_stadt_muenchen = Users.User('Stadt München', "pic", None, [], "egovernment@muenchen.de")
+    user_stadt_muenchen.set_id('Stadt München')
     Users.user_list[user_stadt_muenchen.id] = user_stadt_muenchen
-
-    dummy = Events.Event("title", "description", "pic", None, [[48.29816, 11.70607]], "None", ["Bouldering"])
-    Events.event_list[dummy.id] = dummy
     add_baenke()
 
-    app.run(host='0.0.0.0', debug=True)
+    # Adds Users
+    x = Users.User('Alice', Users.DEFAULT_PROFILE_PIC, '01.01.1990', [], 'alice@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Bob', Users.DEFAULT_PROFILE_PIC, '15.02.1985', [], 'bob@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Charlie', Users.DEFAULT_PROFILE_PIC, '22.03.1992', [], 'charlie@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('David', Users.DEFAULT_PROFILE_PIC, '12.04.1988', [], 'david@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Eva', Users.DEFAULT_PROFILE_PIC, '30.05.1995', [], 'eva@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Frank', Users.DEFAULT_PROFILE_PIC, '18.06.1987', [], 'frank@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Grace', Users.DEFAULT_PROFILE_PIC, '07.07.1993', [], 'grace@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Hannah', Users.DEFAULT_PROFILE_PIC, '21.08.1991', [], 'hannah@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Ivy', Users.DEFAULT_PROFILE_PIC, '09.09.1994', [], 'ivy@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Jack', Users.DEFAULT_PROFILE_PIC, '16.10.1989', [], 'jack@gmail.com')
+    Users.user_list[x.id] = x
+    x = Users.User('Matthi', Users.DEFAULT_PROFILE_PIC, '16.10.1989', [], 'jack@gmail.com')
+    x.set_id('-1')
+    Users.user_list[x.id] = x
+
+
     
+    user_id_1 = list(Users.user_list.keys())[1]
+    user_id_2 = list(Users.user_list.keys())[2]
+    user_id_3 = list(Users.user_list.keys())[3]
+
+
+    # Adds Events
+    # Bouldering
+    x = Events.Event("Bouldering Basics", "Learn the basics of bouldering.", "pic", datetime(2024,12,1,10,0,0), [48.106945, 11.545771], "Paul", ["Bouldering"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Boulder-Ei", "Climb the famous Boulder-Ei.", "pic", datetime(2024,12,5,18,0,0), [48.263660, 11.668131], "Peter", ["Bouldering"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Boulderwelt Ost", "Fun, modern facility.", "pic", datetime(2024,12,10,14,0,0), [48.125650, 11.611059], "Matthi", ["Bouldering"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Family Bouldering", "Fun for the whole family!", "pic", datetime(2024,12,10,14,0,0), [48.140107, 11.522695], "Matthi", ["Bouldering"])
+    Events.event_list[x.id] = x
+
+    # Hiking
+    x = Events.Event("Sunrise Hike to the Alps", "Experience the Alps at sunrise.", "pic", datetime(2024,12,3,5,0,0), [48.1421, 11.5648], "Luca", ["Hiking"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Forest Walk in Englischer Garten", "Relaxing walk through the forest paths.", "pic", datetime(2024,12,8,11,0,0), [48.1534, 11.5796], "Luca", ["Hiking"])
+    Events.event_list[x.id] = x
+
+    # Pub Crawls
+    x = Events.Event("Historic Pub Crawl", "Explore historic pubs in Munich.", "pic", datetime(2024,12,9,20,0,0), [48.1374, 11.5755], "Matthi", ["Pub Crawls"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Craft Beer Tour", "Taste some of Munich's finest craft beers.", "pic", datetime(2024,12,15,19,30,0), [48.1355, 11.5796], "Matthi", ["Pub Crawls"])
+    Events.event_list[x.id] = x
+
+    # Chess
+    x = Events.Event("Beginner Chess Workshop", "Learn chess from the basics.", "pic", datetime(2024,12,1,18,0,0), [48.1361, 11.5673], "Markus", ["Chess"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Chess Club Meet", "Join local chess enthusiasts.", "pic", datetime(2024,12,12,16,0,0), [48.1473, 11.5673], "Markus", ["Chess"])
+    Events.event_list[x.id] = x
+
+    # Picnics
+    x = Events.Event("Picnic in Englischer Garten", "Enjoy a sunny day in the park.", "pic", datetime(2024,12,2,13,0,0), [48.1527, 11.5866], "Victor", ["Picnics"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Lake Picnicking at Starnberger See", "Picnic by the lake.", "pic", datetime(2024,12,7,12,0,0), [48.1584, 11.5823], "Sebastian", ["Picnics"])
+    Events.event_list[x.id] = x
+
+    # Museums
+    x = Events.Event("Art Exhibit at Pinakothek", "Discover amazing art pieces.", "pic", datetime(2024,12,4,10,30,0), [48.1488, 11.5706], "Luca", ["Museums"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Science at Deutsches Museum", "Explore interactive science exhibits.", "pic", datetime(2024,12,11,14,0,0), [48.1306, 11.6012], "Paul", ["Museums"])
+    Events.event_list[x.id] = x
+
+    # Boat
+    x = Events.Event("Boat Ride on Isar", "Relax with a boat ride on the Isar.", "pic", datetime(2024,12,6,10,0,0), [48.1324, 11.6037], "Sebastian", ["Boat"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Sunset Cruise", "Watch the sunset from the water.", "pic", datetime(2024,12,13,17,0,0), [48.1389, 11.6064], "Niklas", ["Boat"])
+    Events.event_list[x.id] = x
+
+    # Running
+    x = Events.Event("Morning Run in Englischer Garten", "Start your day with a run.", "pic", datetime(2024,12,5,6,30,0), [48.1573, 11.5846], "Victor", ["Running"])
+    Events.event_list[x.id] = x
+    x = Events.Event("10k Run", "Push yourself in this 10k run.", "pic", datetime(2024,12,10,9,0,0), [48.1745, 11.5566], "Luca", ["Running"])
+    Events.event_list[x.id] = x
+
+    # Board Games
+    x = Events.Event("Board Game Night", "Enjoy a fun night of board games.", "pic", datetime(2024,12,2,19,0,0), [48.1384, 11.5743], "Paul", ["Board Games"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Strategy Games Meetup", "Test your strategic skills.", "pic", datetime(2024,12,9,15,0,0), [48.1399, 11.5718], "Markus", ["Board Games"])
+    Events.event_list[x.id] = x
+
+    # Meet new people
+    x = Events.Event("Coffee and Chat Meetup", "Make new friends over coffee.", "pic", datetime(2024,12,3,16,0,0), [48.1445, 11.5604], "Olaf", ["Meet new people"])
+    Events.event_list[x.id] = x
+    x = Events.Event("Outdoor Games Day", "Play outdoor games and socialize.", "pic", datetime(2024,12,8,14,0,0), [48.1503, 11.5756], "Olaf", ["Meet new people"])
+    Events.event_list[x.id] = x
+
+
+    # Starts the application
+    app.run(host='0.0.0.0', debug=True)
+        
